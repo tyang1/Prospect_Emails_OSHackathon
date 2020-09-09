@@ -12,7 +12,6 @@ app.use(cookieParser());
  * root
  */
 app.get("/images", (req, res) => {
-  
     console.log("hitting the main route to get images")
   });
 

@@ -1,14 +1,31 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import MyForm from './components/MyForm.jsx';
-// import './index.css';
+import MainPanel from './components/MainPanel.jsx';
 
-class App extends React.Component{
-    render(){
+export default function App() {
+      const [images, setImages] = useState({});
+      const handleImageOutput = (images) => {
+        // console.log("inside hamelImageOutput")
+        setImages(images);
+      }
         return(
-           <MyForm/>
+            <div>
+            <div>
+               <MainPanel images={images}/>
+            </div>
+            <div class="mui--divider-right"></div>
+             <div>
+                <MyForm handleImageOutput={handleImageOutput}/>
+            </div>
+            </div>
         )
     }
-}
 
-ReactDOM.render(<App />, document.getElementById('app'))
+function renderApp() {
+        ReactDOM.render(
+            <App />, document.getElementById('app')
+        );
+      }
+
+renderApp();

@@ -11,9 +11,7 @@ function onSubmitForm(formData) {
     //where to call the API to invoke image creation
   console.log(formData)
 }
-function showRef(data) {
-    console.log("showRef", data)
-}
+
 export default function MyForm() {
       const { register, handleSubmit } = useForm();
       return (
@@ -29,16 +27,3 @@ export default function MyForm() {
       );
     
   }
-
-// export default function MyForm() {
-//   const { register, handleSubmit } = useForm();
-//   return (
-//     <form onSubmit={handleSubmit(onSubmitForm)}>
-//       <label>
-//         Phone Number:
-//         <input type="text" name="phoneNumber" ref={register} />
-//       </label>
-//       <input type="submit" value="Submit" />
-//     </form>
-//   );
-// }

@@ -6,7 +6,7 @@ import { getImages } from "./actions/API.js";
 
 export default function App() {
       const [images, setImages] = useState({});
-      const handleImageOutput = (formData) => {
+      const handleImageOutput = async (formData) => {
     // formData payload includes:
     //  2 COLOR=green
     //  3 HEADER_TEXT="Notifications for Bandolier"
@@ -17,7 +17,7 @@ export default function App() {
     //  8 DASHBOARD_IMAGE=dash.jpg
     //  9 SCREENSHOT_IMAGE=shot.jpg
     // 10 PUSH_NOTIF_IMAGE=logo.jpg
-        const images = getImages({
+        const images = await getImages({
             COLOR :"green",
             HEADER_TEXT : "Notifications for Bandolier",
             PUSH_NOTIF_HEADER : "We re saving this for you!",

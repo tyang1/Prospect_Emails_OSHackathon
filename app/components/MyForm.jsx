@@ -8,10 +8,14 @@ import { palette } from '@material-ui/system';
 
 
 export default function MyForm(props) {
-      const { handleImageOutput } = props;
+      // const { handleImageOutput } = props;
       const { register, handleSubmit } = useForm();
+      const onSubmitForm = (formData) => {
+        console.log("inside fake handleImageOutput", formData)
+        // handleImageOutput(formData)
+      }
       return (
-        <Form onSubmit = {handleSubmit(handleImageOutput)}>
+        <Form onSubmit = {handleSubmit(onSubmitForm)}>
           <legend>Template Fields</legend>
           <Input name="companyName" ref={register} label="Company" type="email" required={true} />
           <Input name="siteUrl" ref={register} label="Required Site URL" floatingLabel={true} required={true} />

@@ -9,12 +9,6 @@
     "build": "webpack --mode=development --watch",
     "start": "nodemon server/server.js"
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

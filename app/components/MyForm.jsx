@@ -7,11 +7,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { palette } from '@material-ui/system';
 
 export default function MyForm(props) {
-  // const { handleImageOutput } = props;
+  const { handleImageOutput } = props;
   const { control, handleSubmit } = useForm();
   const onSubmitForm = (formData) => {
-    console.log('inside fake handleImageOutput', formData);
-    // handleImageOutput(formData)
+    handleImageOutput(formData);
   };
   return (
     <Form onSubmit={handleSubmit(onSubmitForm)}>

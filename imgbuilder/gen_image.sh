@@ -1,13 +1,14 @@
 set -exuo pipefail
 COLOR=grey
-HEADER_TEXT="Notifications for Bandolier"
+HEADER_TEXT="Notifications for Tiffany"
 PUSH_NOTIF_HEADER="We\'re saving this for you!"
 PUSH_NOTIF_MSG="You\'re one step away.  Don\'t forget to checkout!"
 PUSH_NOTIF_HOST="bandolierstyle.com"
 URL_TEXT="bandolierstyle.com"
-DASHBOARD_IMAGE=dash.jpg
+DASHBOARD_IMAGE=$1
 SCREENSHOT_IMAGE=shot.jpg
 PUSH_NOTIF_IMAGE=icon.jpg
+OUTPUT_IMAGE=out.jpg
 
 BASE_IMAGE=base.jpg
 BROWSER_IMAGE=browser.jpg

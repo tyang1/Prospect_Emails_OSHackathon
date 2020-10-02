@@ -6,15 +6,15 @@ const { exec } = require('child_process');
 const app = express();
 
 const imgRootPath = '../imgbuilder/';
-let imageSettings = {
-  DASHBOARD_IMAGE: 'dash.jpg',
-  SCREENSHOT_IMAGE: 'shot.jpg',
-  PUSH_NOTIF_IMAGE: 'icon.jpg',
-  OUTPUT_IMAGE: 'out.jpg',
-  BASE_IMAGE: 'base.jpg',
-  BROWSER_IMAGE: 'browser.jpg',
-  PUSH_IMAGE: 'push.jpg',
-};
+// let imageSettings = {
+//   DASHBOARD_IMAGE: 'dash.jpg',
+//   SCREENSHOT_IMAGE: 'shot.jpg',
+//   PUSH_NOTIF_IMAGE: 'icon.jpg',
+//   OUTPUT_IMAGE: 'out.jpg',
+//   BASE_IMAGE: 'base.jpg',
+//   BROWSER_IMAGE: 'browser.jpg',
+//   PUSH_IMAGE: 'push.jpg',
+// };
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -34,9 +34,14 @@ app.get('/', (req, res) => {
 
 app.post('/images', (req, res) => {
   //kicking off a child process here to build the image
+  if (
+    process.cwd() !== '/Users/tiffanyyang/Desktop/OSHackathon/my_app/imgbuilder'
+  ) {
+    process.chdir('./imgbuilder');
+  }
   const testscript = exec(
-    'sh gen_image.sh dash.jpg SCREENSHOT_IMAGE PUSH_NOTIF_IMAGE OUTPUT_IMAGE BASE_IMAGE BROWSER_IMAGE PUSH_IMAGE',
-    { cwd: './../imgbuilder/' },
+    `sh gen_image.sh dash.jpg SCREENSHOT_IMAGE PUSH_NOTIF_IMAGE OUTPUT_IMAGE BASE_IMAGE BROWSER_IMAGE PUSH_IMAGE`,
+    // { cwd: './imgbuilder' },
     (err, stdout, stderr) => {
       if (err) {
         console.error(`exec error: ${err}`);

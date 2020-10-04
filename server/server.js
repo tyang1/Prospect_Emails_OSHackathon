@@ -34,13 +34,13 @@ app.get('/', (req, res) => {
 
 app.post('/images', (req, res) => {
   //kicking off a child process here to build the image
-  if (
-    process.cwd() !== '/Users/tiffanyyang/Desktop/OSHackathon/my_app/imgbuilder'
-  ) {
-    process.chdir('./imgbuilder');
-  }
+  // if (
+  //   process.cwd() !== '/Users/tiffanyyang/Desktop/OSHackathon/my_app/imgbuilder'
+  // ) {
+  //   process.chdir('./imgbuilder');
+  // }
   const testscript = exec(
-    `sh gen_image.sh dash.jpg SCREENSHOT_IMAGE PUSH_NOTIF_IMAGE OUTPUT_IMAGE BASE_IMAGE BROWSER_IMAGE PUSH_IMAGE`,
+    `sh ./imgbuilder/gen_image.sh dash.jpg SCREENSHOT_IMAGE PUSH_NOTIF_IMAGE OUTPUT_IMAGE BASE_IMAGE BROWSER_IMAGE PUSH_IMAGE`,
     // { cwd: './imgbuilder' },
     (err, stdout, stderr) => {
       if (err) {

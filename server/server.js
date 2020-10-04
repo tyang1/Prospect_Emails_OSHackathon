@@ -2,11 +2,11 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { exec } = require('child_process');
 const app = express();
+const fs = require('fs');
+const reimage = require('./reimage.js');
 
-const imgRootPath = '../imgbuilder/';
-// let imageSettings = {
+// let imageArgs = {
 //   DASHBOARD_IMAGE: 'dash.jpg',
 //   SCREENSHOT_IMAGE: 'shot.jpg',
 //   PUSH_NOTIF_IMAGE: 'icon.jpg',
@@ -34,23 +34,25 @@ app.get('/', (req, res) => {
 
 app.post('/images', (req, res) => {
   //kicking off a child process here to build the image
-  // if (
-  //   process.cwd() !== '/Users/tiffanyyang/Desktop/OSHackathon/my_app/imgbuilder'
-  // ) {
-  //   process.chdir('./imgbuilder');
-  // }
-  const testscript = exec(
-    `sh ./imgbuilder/gen_image.sh dash.jpg SCREENSHOT_IMAGE PUSH_NOTIF_IMAGE OUTPUT_IMAGE BASE_IMAGE BROWSER_IMAGE PUSH_IMAGE`,
-    // { cwd: './imgbuilder' },
-    (err, stdout, stderr) => {
-      if (err) {
-        console.error(`exec error: ${err}`);
-        return;
+  // let browserImgStreamIn = fs.createReadStream('../imgbuilder/browser.jpg');
+  reimage()
+    .then((result) => {
+      if (result.success) {
+        console.log('getting images!!!');
+        fs.readFile(
+          path.resolve(__dirname, '../imgbuilder/out.jpg'),
+          (err, data) => {
+            if (err) throw err;
+            res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+            res.end(data);
+          }
+        );
+        //TODO: return output.jpg to res
       }
-
-      console.log(` images data: ${stdout}`);
-    }
-  );
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.listen(3000, () => {

@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 import MyForm from './components/MyForm.jsx';
 import MainPanel from './components/MainPanel.jsx';
 import { getImages } from './actions/API.js';
+import path from 'path';
 
 export default function App() {
-  const [images, setImages] = useState({});
+  const [images, setImage] = useState(null);
   const handleImageOutput = async (formData) => {
     const {
       Icon,
@@ -25,16 +26,17 @@ export default function App() {
     //  8 DASHBOARD_IMAGE=dash.jpg
     //  9 SCREENSHOT_IMAGE=shot.jpg
     // 10 PUSH_NOTIF_IMAGE=logo.jpg
-    const images = await getImages({
-      COLOR: backgroundColor,
-      HEADER_TEXT: `Notifications for ${companyName}`,
-      PUSH_NOTIF_HEADER: 'We re saving this for you!',
-      PUSH_NOTIF_MSG: notificationText,
-      PUSH_NOTIF_HOST: siteUrl,
-      URL_TEXT: siteUrl,
-    });
-    //setState the images for View!
-    setImages(images);
+    await getImages(
+      {
+        COLOR: backgroundColor,
+        HEADER_TEXT: `Notifications for ${companyName}`,
+        PUSH_NOTIF_HEADER: 'We re saving this for you!',
+        PUSH_NOTIF_MSG: notificationText,
+        PUSH_NOTIF_HOST: siteUrl,
+        URL_TEXT: siteUrl,
+      },
+      setImage
+    );
   };
   return (
     <div>

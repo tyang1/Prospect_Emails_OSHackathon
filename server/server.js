@@ -34,20 +34,18 @@ app.get('/', (req, res) => {
 
 app.post('/images', (req, res) => {
   //kicking off a child process here to build the image
-  // let browserImgStreamIn = fs.createReadStream('../imgbuilder/browser.jpg');
   reimage()
     .then((result) => {
       if (result.success) {
         console.log('getting images!!!');
-        fs.readFile(
-          path.resolve(__dirname, '../imgbuilder/out.jpg'),
-          (err, data) => {
-            if (err) throw err;
-            res.writeHead(200, { 'Content-Type': 'image/jpeg' });
-            res.end(data);
-          }
-        );
-        //TODO: return output.jpg to res
+        const { outputLocationPath } = req.body;
+        let imagePath = path.resolve(__dirname, '../imgbuilder/out.jpg');
+
+        fs.readFile(imagePath, (err, data) => {
+          if (err) throw err;
+          res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+          res.end(Buffer.from(data, 'binary').toString('base64'));
+        });
       }
     })
     .catch((err) => {

@@ -1,9 +1,9 @@
 const axios = require('axios').default;
 
-export async function getImages(formData) {
+export async function getImages(formData, setImage) {
   console.log('inside getImages API');
 
-  axios
+  await axios
     .post('http://localhost:3000/images', {
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -12,12 +12,14 @@ export async function getImages(formData) {
         'Access-Control-Allow-Headers':
           'X-Requested-With, content-type, Authorization',
       },
-      ...formData,
+      responseType: 'arraybuffer',
     })
-    .then(function (response) {
-      console.log(response);
+    .then((response) => {
+      let imageURL = `data:image/jpg;base64,${response.data}`;
+      setImage(imageURL);
+      return;
     })
-    .catch(function (error) {
+    .catch((error) => {
       console.log(error);
     });
 }

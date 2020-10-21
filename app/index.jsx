@@ -41,7 +41,9 @@ export default function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <MainPanel images={images} />
-      <MyForm handleImageOutput={handleImageOutput} />
+      <div style={{ paddingRight: '50px' }}>
+        <MyForm handleImageOutput={handleImageOutput} />
+      </div>
     </div>
   )
 }

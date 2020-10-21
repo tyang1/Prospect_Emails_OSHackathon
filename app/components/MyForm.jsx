@@ -5,6 +5,7 @@ import Textarea from 'muicss/lib/react/textarea';
 import Button from 'muicss/lib/react/button';
 import { useForm, Controller } from 'react-hook-form';
 import { palette } from '@material-ui/system';
+import PaletteSelect from './PaletteSelect.jsx';
 
 export default function MyForm(props) {
   const { handleImageOutput } = props;
@@ -33,11 +34,11 @@ export default function MyForm(props) {
         required={true}
       />
       <Controller
-        as={Input}
+        as={PaletteSelect}
         name='backgroundColor'
         control={control}
-        defaultValue=''
-        label='Background Color'
+        // defaultValue=''
+        // label='Background Color'
         floatingLabel={true}
         required={true}
       />

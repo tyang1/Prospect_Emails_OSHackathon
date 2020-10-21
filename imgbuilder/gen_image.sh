@@ -42,7 +42,7 @@ PUSH_NOTIF_IMAGE_TGT=+560+160
 ## convert dash.jpg -scale 800x dash.jpg
 
 convert \
-    -size 1024x768 canvas:$COLOR \
+    -size 1024x768 canvas:\
     $BROWSER_IMAGE -geometry $BROWSER_TGT -composite \
     $SCREENSHOT_IMAGE -geometry $SCREENSHOT_TGT -composite \
     $PUSH_IMAGE -geometry $PUSH_TGT -composite \

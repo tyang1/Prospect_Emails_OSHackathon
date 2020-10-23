@@ -1,6 +1,6 @@
 set -exuo pipefail
 COLOR=grey
-HEADER_TEXT="Notifications for Saturday123"
+HEADER_TEXT=$1
 PUSH_NOTIF_HEADER="We\'re saving this for you!"
 PUSH_NOTIF_MSG="You\'re one step away.  Don\'t forget to checkout!"
 PUSH_NOTIF_HOST="bandolierstyle.com"

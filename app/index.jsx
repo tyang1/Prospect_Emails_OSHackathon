@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import ReactDOM from 'react-dom'
-import MyForm from './components/MyForm.jsx'
-import MainPanel from './components/MainPanel.jsx'
-import { getImages } from './actions/API.js'
-import path from 'path'
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
+import MyForm from './components/MyForm.jsx';
+import MainPanel from './components/MainPanel.jsx';
+import { getImages } from './actions/API.js';
+import path from 'path';
 
 export default function App() {
-  const [images, setImage] = useState(null)
+  const [images, setImage] = useState(null);
   const handleImageOutput = async (formData) => {
     const {
       Icon,
@@ -15,7 +15,7 @@ export default function App() {
       notificationText,
       siteUrl,
       websiteImage,
-    } = formData
+    } = formData;
     // formData payload includes:
     //  2 COLOR=green
     //  3 HEADER_TEXT="Notifications for Bandolier"
@@ -28,16 +28,14 @@ export default function App() {
     // 10 PUSH_NOTIF_IMAGE=logo.jpg
     await getImages(
       {
-        COLOR: backgroundColor,
-        HEADER_TEXT: `Notifications for ${companyName}`,
-        PUSH_NOTIF_HEADER: 'We re saving this for you!',
-        PUSH_NOTIF_MSG: notificationText,
-        PUSH_NOTIF_HOST: siteUrl,
-        URL_TEXT: siteUrl,
+        notificationText,
+        siteUrl,
+        companyName,
+        backgroundColor,
       },
-      setImage,
-    )
-  }
+      setImage
+    );
+  };
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <MainPanel images={images} />
@@ -45,11 +43,11 @@ export default function App() {
         <MyForm handleImageOutput={handleImageOutput} />
       </div>
     </div>
-  )
+  );
 }
 
 function renderApp() {
-  ReactDOM.render(<App />, document.getElementById('app'))
+  ReactDOM.render(<App />, document.getElementById('app'));
 }
 
-renderApp()
+renderApp();

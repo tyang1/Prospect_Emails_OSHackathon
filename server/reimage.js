@@ -6,7 +6,6 @@ module.exports = function reimage(userInputs) {
     siteUrl = 'OneSignalStyle.com',
     companyName = 'bandolierstyle.com',
   } = userInputs;
-  console.log('inside reimage', notificationText);
   const HEADER_TEXT = notificationText;
   const PUSH_NOTIF_HOST = companyName;
   const URL_TEXT = siteUrl;

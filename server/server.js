@@ -32,14 +32,14 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage }).single('photo');
 
-const uploadMW = (req, res) => {
+const uploadMW = (req, res, next) => {
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(500).json(err);
     } else if (err) {
       return res.status(500).json(err);
     }
-    return res.status(200).send(req.file);
+    next();
   });
 };
 
@@ -64,10 +64,6 @@ app.get('/', (req, res) => {
 
 app.post('/images', upload, (req, res) => {
   //kicking off a child process here to build the image
-  // if (req.file) {
-  //   console.log('image uploaded', req.file);
-  // }
-  console.log('req.fields', req.body);
   reimage(req.body)
     .then((result) => {
       if (result.success) {
@@ -83,13 +79,6 @@ app.post('/images', upload, (req, res) => {
       console.log(err);
     });
 });
-
-// app.post('/upload', upload, (req, res) => {
-//   console.log('inside /upaload');
-//   if (req.file) {
-//     return;
-//   } else throw 'error';
-// });
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

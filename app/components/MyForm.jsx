@@ -6,28 +6,7 @@ import Button from 'muicss/lib/react/button';
 import { useForm, Controller } from 'react-hook-form';
 import { palette } from '@material-ui/system';
 import PaletteSelect from './PaletteSelect.jsx';
-
-function ImageUpload(props) {
-  const { onFileSelect } = props;
-  const handleFileInput = (e) => {
-    // handle validations
-    onFileSelect(e.target.files[0]);
-  };
-
-  const handleSubmit = (event) => {
-    event.stopPropagation();
-  };
-  return (
-    <>
-      <input
-        onChange={handleFileInput}
-        type='file'
-        accept='image/*'
-        name='photo'
-      />
-    </>
-  );
-}
+import ImageUpload from './ImageUploader.jsx';
 
 export default function MyForm(props) {
   const { handleImageOutput } = props;
@@ -100,8 +79,11 @@ export default function MyForm(props) {
           floatingLabel={true}
           required={true}
         />
+        <label>Website Image Upload</label>
         <ImageUpload onFileSelect={handleFileUpload} />
-        <Button variant='raised'>Load Image!</Button>
+
+        <Button variant='raised'>See Preview Image!</Button>
+        <Button variant='raised'>Download Image!</Button>
       </form>
     </>
   );

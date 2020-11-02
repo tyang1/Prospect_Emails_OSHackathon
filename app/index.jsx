@@ -7,15 +7,15 @@ import path from 'path';
 
 export default function App() {
   const [images, setImage] = useState(null);
-  const handleImageOutput = async (formData) => {
-    const {
-      Icon,
-      backgroundColor,
-      companyName,
-      notificationText,
-      siteUrl,
-      websiteImage,
-    } = formData;
+  const handleImageOutput = async (data) => {
+    // const {
+    //   Icon,
+    //   backgroundColor,
+    //   companyName,
+    //   notificationText,
+    //   siteUrl,
+    //   websiteImage,
+    // } = formData;
     // formData payload includes:
     //  2 COLOR=green
     //  3 HEADER_TEXT="Notifications for Bandolier"
@@ -26,13 +26,14 @@ export default function App() {
     //  8 DASHBOARD_IMAGE=dash.jpg
     //  9 SCREENSHOT_IMAGE=shot.jpg
     // 10 PUSH_NOTIF_IMAGE=logo.jpg
+    console.log('index.jsx', data);
     await getImages(
-      {
-        notificationText,
-        siteUrl,
-        companyName,
-        backgroundColor,
-      },
+      //   notificationText,
+      //   siteUrl,
+      //   companyName,
+      //   backgroundColor,
+      //   websiteImage,
+      data,
       setImage
     );
   };

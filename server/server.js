@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const fs = require('fs');
 const reimage = require('./reimage.js');
+var cors = require('cors');
 
 /**Multer adds a body object and a file or files object to the request object.
  * The body object contains the values of the text fields of the form, the file or files object
@@ -17,16 +18,36 @@ var storage = multer.diskStorage({
     cb(null, path.resolve(__dirname, '../imgbuilder'));
   },
   filename: function (req, file, cb) {
-    // const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + '.jpg');
   },
 });
-var upload = multer({ storage: storage });
+
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+//     cb(null, true);
+//   } else {
+//     cb(null, false);
+//   }
+// };
+
+var upload = multer({ storage }).single('photo');
+
+const uploadMW = (req, res) => {
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json(err);
+    } else if (err) {
+      return res.status(500).json(err);
+    }
+    return res.status(200).send(req.file);
+  });
+};
 
 let PORT = 8080;
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(cors());
 app.use('/', express.static('dist'));
 
 /**
@@ -41,9 +62,12 @@ app.get('/', (req, res) => {
  *
  */
 
-app.post('/images', upload.single('photo'), (req, res) => {
+app.post('/images', upload, (req, res) => {
   //kicking off a child process here to build the image
   const { data } = req.body;
+  if (req.file) {
+    console.log('image uploaded', req.file);
+  }
   reimage(data)
     .then((result) => {
       if (result.success) {
@@ -60,7 +84,7 @@ app.post('/images', upload.single('photo'), (req, res) => {
     });
 });
 
-app.post('/upload', upload.single('photo'), (req, res) => {
+app.post('/upload', upload, (req, res) => {
   console.log('inside /upaload');
   if (req.file) {
     return;

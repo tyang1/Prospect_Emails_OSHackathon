@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Form from 'muicss/lib/react/form';
 import Input from 'muicss/lib/react/input';
 import Textarea from 'muicss/lib/react/textarea';
@@ -6,36 +6,68 @@ import Button from 'muicss/lib/react/button';
 import { useForm, Controller } from 'react-hook-form';
 import { palette } from '@material-ui/system';
 import PaletteSelect from './PaletteSelect.jsx';
+import axios from 'axios';
 
-function ImageUpload() {
+function ImageUpload(props) {
+  const { onFileSelect } = props;
+  // const measureRef = useCallback((node) => {
+  //   if (node !== null) {
+  //     handleFileUpload(node.files[0]);
+  //   }
+  // });
+  const handleFileInput = (e) => {
+    // handle validations
+    onFileSelect(e.target.files[0]);
+  };
+
   const handleSubmit = (event) => {
     event.stopPropagation();
   };
   return (
-    <form
-      action='/upload'
-      onSubmit={handleSubmit}
-      method='post'
-      enctype='multipart/form-data'
-    >
-      <input type='file' accept='image/*' name='photo' />
-
-      <input type='submit' value='upload' />
-    </form>
+    <>
+      {/* <form
+        action='/upload'
+        onSubmit={handleSubmit}
+        method='post'
+        enctype='multipart/form-data'
+      > */}
+      <input
+        onChange={handleFileInput}
+        type='file'
+        accept='image/*'
+        name='photo'
+      />
+      {/* <input type='submit' name='btn_upload_profile_pic' value='Upload' />
+      </form> */}
+    </>
   );
 }
 
 export default function MyForm(props) {
   const { handleImageOutput } = props;
   const { control, handleSubmit } = useForm();
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (file) => {
+    setFileName(file);
+    console.log('fileName1', fileName);
+  };
+
   const onSubmitForm = (formData) => {
-    handleImageOutput(formData);
+    // console.log('formData', formData);
+    // if (!fileName) {
+    // }
+    console.log('fileName2', fileName);
+    const data = new FormData();
+    // formDataTest.append('fieldname', 'photo');
+    data.append('photo', fileName);
+    handleImageOutput(data);
   };
   return (
     <>
-      <Form onSubmit={handleSubmit(onSubmitForm)}>
+      <form encType='multipart/form-data' onSubmit={handleSubmit(onSubmitForm)}>
         <legend>Template Fields</legend>
-        <Controller
+        {/* <Controller
           as={Input}
           name='companyName'
           control={control}
@@ -56,8 +88,6 @@ export default function MyForm(props) {
           as={PaletteSelect}
           name='backgroundColor'
           control={control}
-          // defaultValue=''
-          // label='Background Color'
           floatingLabel={true}
           required={true}
         />
@@ -69,17 +99,17 @@ export default function MyForm(props) {
           label='Icon'
           floatingLabel={true}
           required={true}
-        />
-        <Controller
-          as={Input}
+        /> */}
+        {/* <Controller
+          as={ImageUpload}
           name='websiteImage'
           control={control}
           defaultValue=''
           label='Website Image'
           floatingLabel={true}
-          required={true}
-        />
-        <Controller
+          // required={true}
+        /> */}
+        {/* <Controller
           as={Textarea}
           name='notificationText'
           control={control}
@@ -87,10 +117,10 @@ export default function MyForm(props) {
           label='Notification Text'
           floatingLabel={true}
           required={true}
-        />
-        <ImageUpload />
-        <Button variant='raised'>Download Image!</Button>
-      </Form>
+        /> */}
+        <ImageUpload onFileSelect={handleFileUpload} />
+        <Button variant='raised'>Load Image!</Button>
+      </form>
     </>
   );
 }

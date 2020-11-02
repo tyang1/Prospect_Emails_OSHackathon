@@ -6,7 +6,6 @@ import Button from 'muicss/lib/react/button';
 import { useForm, Controller } from 'react-hook-form';
 import { palette } from '@material-ui/system';
 import PaletteSelect from './PaletteSelect.jsx';
-import axios from 'axios';
 
 function ImageUpload(props) {
   const { onFileSelect } = props;
@@ -50,24 +49,30 @@ export default function MyForm(props) {
 
   const handleFileUpload = (file) => {
     setFileName(file);
-    console.log('fileName1', fileName);
   };
 
   const onSubmitForm = (formData) => {
-    // console.log('formData', formData);
-    // if (!fileName) {
-    // }
-    console.log('fileName2', fileName);
+    const {
+      notificationText,
+      siteUrl,
+      companyName,
+      backgroundColor,
+    } = formData;
+    console.log('formData', formData);
     const data = new FormData();
     // formDataTest.append('fieldname', 'photo');
     data.append('photo', fileName);
+    data.append('notificationText', notificationText);
+    data.append('siteUrl', siteUrl);
+    data.append('companyName', companyName);
+    data.append('backgroundColor', backgroundColor);
     handleImageOutput(data);
   };
   return (
     <>
       <form encType='multipart/form-data' onSubmit={handleSubmit(onSubmitForm)}>
         <legend>Template Fields</legend>
-        {/* <Controller
+        <Controller
           as={Input}
           name='companyName'
           control={control}
@@ -99,7 +104,7 @@ export default function MyForm(props) {
           label='Icon'
           floatingLabel={true}
           required={true}
-        /> */}
+        />
         {/* <Controller
           as={ImageUpload}
           name='websiteImage'
@@ -109,7 +114,7 @@ export default function MyForm(props) {
           floatingLabel={true}
           // required={true}
         /> */}
-        {/* <Controller
+        <Controller
           as={Textarea}
           name='notificationText'
           control={control}
@@ -117,7 +122,7 @@ export default function MyForm(props) {
           label='Notification Text'
           floatingLabel={true}
           required={true}
-        /> */}
+        />
         <ImageUpload onFileSelect={handleFileUpload} />
         <Button variant='raised'>Load Image!</Button>
       </form>

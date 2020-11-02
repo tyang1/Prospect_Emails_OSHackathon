@@ -64,11 +64,11 @@ app.get('/', (req, res) => {
 
 app.post('/images', upload, (req, res) => {
   //kicking off a child process here to build the image
-  const { data } = req.body;
-  if (req.file) {
-    console.log('image uploaded', req.file);
-  }
-  reimage(data)
+  // if (req.file) {
+  //   console.log('image uploaded', req.file);
+  // }
+  console.log('req.fields', req.body);
+  reimage(req.body)
     .then((result) => {
       if (result.success) {
         let imagePath = path.resolve(__dirname, '../imgbuilder/out.jpg');
@@ -84,12 +84,12 @@ app.post('/images', upload, (req, res) => {
     });
 });
 
-app.post('/upload', upload, (req, res) => {
-  console.log('inside /upaload');
-  if (req.file) {
-    return;
-  } else throw 'error';
-});
+// app.post('/upload', upload, (req, res) => {
+//   console.log('inside /upaload');
+//   if (req.file) {
+//     return;
+//   } else throw 'error';
+// });
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

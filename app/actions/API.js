@@ -6,15 +6,12 @@ export async function getImages(data, setImage) {
   await axios({
     url: 'http://localhost:8080/images',
     method: 'post',
-
-    // headers: {
-    //   'Access-Control-Allow-Origin': '*',
-    //   'Access-Control-Allow-Methods':
-    //     'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-    //   'Access-Control-Allow-Headers':
-    //     'X-Requested-With, content-type, Authorization',
-    //   'Content-Type': 'multipart/form-data',
-    // },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization',
+    },
     responseType: 'arraybuffer',
     data,
   })

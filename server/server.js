@@ -30,7 +30,10 @@ var storage = multer.diskStorage({
 //   }
 // };
 
-var upload = multer({ storage }).single('photo');
+var upload = multer({ storage }).fields([
+  { name: 'website' },
+  { name: 'icon' },
+]);
 
 const uploadMW = (req, res, next) => {
   upload(req, res, function (err) {

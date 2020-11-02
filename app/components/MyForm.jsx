@@ -11,10 +11,12 @@ import ImageUpload from './ImageUploader.jsx';
 export default function MyForm(props) {
   const { handleImageOutput } = props;
   const { control, handleSubmit } = useForm();
-  const [fileName, setFileName] = useState('');
+  const [fileName, addFileName] = useState({});
 
   const handleFileUpload = (file) => {
-    setFileName(file);
+    const { name, content } = file;
+    fileName[name] = content;
+    addFileName(fileName);
   };
 
   const onSubmitForm = (formData) => {
@@ -24,9 +26,9 @@ export default function MyForm(props) {
       companyName,
       backgroundColor,
     } = formData;
-    console.log('formData', formData);
     const data = new FormData();
-    data.append('photo', fileName);
+    data.append('website', fileName['website']);
+    data.append('icon', fileName['icon']);
     data.append('notificationText', notificationText);
     data.append('siteUrl', siteUrl);
     data.append('companyName', companyName);
@@ -80,7 +82,17 @@ export default function MyForm(props) {
           required={true}
         />
         <label>Website Image Upload</label>
-        <ImageUpload onFileSelect={handleFileUpload} />
+        <ImageUpload
+          id='contained-button-file1'
+          fileName='website'
+          onFileSelect={handleFileUpload}
+        />
+        <label>Push Notification Icon Upload</label>
+        <ImageUpload
+          id='contained-button-file2'
+          fileName='icon'
+          onFileSelect={handleFileUpload}
+        />
 
         <Button variant='raised'>See Preview Image!</Button>
         <Button variant='raised'>Download Image!</Button>

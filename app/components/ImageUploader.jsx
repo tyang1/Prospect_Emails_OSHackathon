@@ -33,7 +33,7 @@ const styles = (theme) => ({
 });
 
 export function ImageUpload(props) {
-  const { onFileSelect, classes } = props;
+  const { onFileSelect, classes, fileName, id } = props;
   const [isSelected, setSelected] = useState(false);
   const handleFileInput = (e) => {
     // handle validations
@@ -42,19 +42,19 @@ export function ImageUpload(props) {
     } else {
       setSelected(false);
     }
-    onFileSelect(e.target.files[0]);
+    onFileSelect({ name: fileName, content: e.target.files[0] });
   };
   return (
     <div>
       <input
         onChange={handleFileInput}
         className={classes.input}
-        id='contained-button-file'
+        id={id}
         type='file'
         accept='image/*'
-        name='photo'
+        name={fileName}
       />
-      <label htmlFor='contained-button-file'>
+      <label htmlFor={id}>
         <Fab
           component='span'
           className={cx({

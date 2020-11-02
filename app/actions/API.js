@@ -1,8 +1,6 @@
 const axios = require('axios').default;
 
 export async function getImages(data, setImage) {
-  console.log('inside getImages API');
-
   await axios({
     url: 'http://localhost:8080/images',
     method: 'post',

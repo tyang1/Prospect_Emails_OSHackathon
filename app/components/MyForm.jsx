@@ -9,11 +9,6 @@ import PaletteSelect from './PaletteSelect.jsx';
 
 function ImageUpload(props) {
   const { onFileSelect } = props;
-  // const measureRef = useCallback((node) => {
-  //   if (node !== null) {
-  //     handleFileUpload(node.files[0]);
-  //   }
-  // });
   const handleFileInput = (e) => {
     // handle validations
     onFileSelect(e.target.files[0]);
@@ -24,20 +19,12 @@ function ImageUpload(props) {
   };
   return (
     <>
-      {/* <form
-        action='/upload'
-        onSubmit={handleSubmit}
-        method='post'
-        enctype='multipart/form-data'
-      > */}
       <input
         onChange={handleFileInput}
         type='file'
         accept='image/*'
         name='photo'
       />
-      {/* <input type='submit' name='btn_upload_profile_pic' value='Upload' />
-      </form> */}
     </>
   );
 }
@@ -60,7 +47,6 @@ export default function MyForm(props) {
     } = formData;
     console.log('formData', formData);
     const data = new FormData();
-    // formDataTest.append('fieldname', 'photo');
     data.append('photo', fileName);
     data.append('notificationText', notificationText);
     data.append('siteUrl', siteUrl);
@@ -105,15 +91,6 @@ export default function MyForm(props) {
           floatingLabel={true}
           required={true}
         />
-        {/* <Controller
-          as={ImageUpload}
-          name='websiteImage'
-          control={control}
-          defaultValue=''
-          label='Website Image'
-          floatingLabel={true}
-          // required={true}
-        /> */}
         <Controller
           as={Textarea}
           name='notificationText'

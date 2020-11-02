@@ -16,7 +16,7 @@ export async function getImages(data, setImage) {
     data,
   })
     .then((response) => {
-      let imageURL = `data:image/jpg;base64,${response.data}`;
+      let imageURL = `data:image/jpg;charset=utf-8;base64,${response.data}`;
       setImage(imageURL);
       return;
     })

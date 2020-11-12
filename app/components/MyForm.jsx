@@ -19,6 +19,7 @@ export default function MyForm(props) {
     addFileName(fileName);
   };
 
+  //TODO: making the onSubmitForm more reusable with delegate pattern
   const onSubmitForm = (formData) => {
     const {
       notificationText,
@@ -60,15 +61,6 @@ export default function MyForm(props) {
           as={PaletteSelect}
           name='backgroundColor'
           control={control}
-          floatingLabel={true}
-          required={true}
-        />
-        <Controller
-          as={Input}
-          name='Icon'
-          control={control}
-          defaultValue=''
-          label='Icon'
           floatingLabel={true}
           required={true}
         />

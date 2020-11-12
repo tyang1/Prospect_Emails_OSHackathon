@@ -8,7 +8,7 @@ import path from 'path';
 export default function App() {
   const [images, setImage] = useState(null);
   const handleImageOutput = async (data) => {
-    // formData payload could include:
+    // data payload could include:
     //  2 COLOR=green
     //  3 HEADER_TEXT="Notifications for Bandolier"
     //  4 PUSH_NOTIF_HEADER="We re saving this for you!"

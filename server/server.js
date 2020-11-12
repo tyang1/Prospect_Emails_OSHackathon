@@ -35,16 +35,16 @@ var upload = multer({ storage }).fields([
   { name: 'icon' },
 ]);
 
-const uploadMW = (req, res, next) => {
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(500).json(err);
-    } else if (err) {
-      return res.status(500).json(err);
-    }
-    next();
-  });
-};
+// const uploadMW = (req, res, next) => {
+//   upload(req, res, function (err) {
+//     if (err instanceof multer.MulterError) {
+//       return res.status(500).json(err);
+//     } else if (err) {
+//       return res.status(500).json(err);
+//     }
+//     next();
+//   });
+// };
 
 let PORT = 8080;
 

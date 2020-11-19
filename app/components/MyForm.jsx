@@ -9,7 +9,7 @@ import PaletteSelect from './PaletteSelect.jsx';
 import ImageUpload from './ImageUploader.jsx';
 
 export default function MyForm(props) {
-  const { handleImageOutput } = props;
+  const { handleImagePreview } = props;
   const { control, handleSubmit } = useForm();
   const [fileName, addFileName] = useState({});
 
@@ -34,7 +34,7 @@ export default function MyForm(props) {
     data.append('siteUrl', siteUrl);
     data.append('companyName', companyName);
     data.append('backgroundColor', backgroundColor);
-    handleImageOutput(data);
+    handleImagePreview(data);
   };
   return (
     <>
@@ -87,8 +87,10 @@ export default function MyForm(props) {
         />
 
         <Button variant='raised'>See Preview Image!</Button>
-        <Button variant='raised'>Download Image!</Button>
       </form>
+      <Button onClick={null} variant='raised'>
+        Test Image!
+      </Button>
     </>
   );
 }

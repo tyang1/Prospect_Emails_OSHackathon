@@ -6,12 +6,51 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const fs = require('fs');
 const reimage = require('./reimage.js');
-var cors = require('cors');
+const cors = require('cors');
+const { vol } = require('memfs');
 
 /**Multer adds a body object and a file or files object to the request object.
  * The body object contains the values of the text fields of the form, the file or files object
  * contains the files uploaded via the form.
  **/
+
+const imagePaths = ['../imgbuilder/browser.jpg', '../imgbuilder/dash.jpg'];
+const json = {};
+
+let fileToMemfsFunc = (file) => {
+  return new Promise((resolve, reject) => {
+    let imagePath = path.resolve(__dirname, file);
+    fs.readFile(imagePath, (err, data) => {
+      if (err) reject(err);
+      json[imagePath.toString()] = Buffer.from(data, 'binary').toString(
+        'base64'
+      );
+      resolve(json);
+    });
+  });
+};
+
+let files = imagePaths.map(fileToMemfsFunc);
+
+//TODO; 1. copying all default images to memfs filesystem
+const createInMemFileSys = async (files) => {
+  try {
+    let promisedFiles = Promise.all(files);
+    await promisedFiles.then((results) => {
+      vol.fromJSON(json);
+      // console.log(
+      //   vol.readFileSync(
+      //     '/Users/tiffanyyang/Desktop/OSHackathon/my_app/imgbuilder/browser.jpg'
+      //   )
+      // );
+    });
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+//Creating in memory builder default images
+createInMemFileSys(files);
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {

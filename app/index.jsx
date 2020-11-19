@@ -24,7 +24,7 @@ export default function App() {
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <MainPanel images={images} />
       <div style={{ paddingRight: '50px' }}>
-        <MyForm handleImageOutput={handleImageOutput} />
+        <MyForm handleImagePreview={handleImageOutput} />
       </div>
     </div>
   );
@@ -35,3 +35,12 @@ function renderApp() {
 }
 
 renderApp();
+
+//NOTE: module.hot.accept(param1: module to be hot reloaded, param2: what needs to happen)
+
+if (module.hot) {
+  module.hot.accept('./components/MyForm.jsx', function () {
+    console.log('Accepting the updated printMe module!');
+    renderApp();
+  });
+}

@@ -19,6 +19,28 @@ export default function MyForm(props) {
     addFileName(fileName);
   };
 
+  const download = (e) => {
+    console.log('inside download');
+    console.log(e.target.href);
+    fetch(e.target.href, {
+      method: 'GET',
+      headers: {},
+    })
+      .then((response) => {
+        response.arrayBuffer().then(function (buffer) {
+          const url = window.URL.createObjectURL(new Blob([buffer]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'out.jpg'); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   //TODO: making the onSubmitForm more reusable with delegate pattern
   const onSubmitForm = (formData) => {
     const {
@@ -88,9 +110,13 @@ export default function MyForm(props) {
 
         <Button variant='raised'>See Preview Image!</Button>
       </form>
-      <Button onClick={null} variant='raised'>
-        Test Image!
-      </Button>
+      <a
+        download
+        onClick={(e) => download(e)}
+        href={'http://localhost:8080/images'}
+      >
+        Download Image!
+      </a>
     </>
   );
 }

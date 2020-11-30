@@ -4,11 +4,12 @@ const fs = require('fs');
 
 function getImage() {
   //TODO: add the memfscreate logic here
+  console.log('server getImage');
   return new Promise((resolve, reject) => {
     let imagePath = path.resolve(__dirname, '../imgbuilder/out.jpg');
     fs.readFile(imagePath, (err, data) => {
       if (err) reject(err);
-      resolve(Buffer.from(data, 'binary').toString('base64'));
+      resolve(Buffer.from(data, 'binary'));
     });
   });
 }
@@ -32,8 +33,10 @@ function reImage(userInputs, memFileJson = null) {
         if (err) {
           reject({ error: err });
         }
-        getImage().then((img) => {
-          resolve(img);
+        let imagePath = path.resolve(__dirname, '../imgbuilder/out.jpg');
+        fs.readFile(imagePath, (err, data) => {
+          if (err) reject(err);
+          resolve(Buffer.from(data, 'binary').toString('base64'));
         });
       }
     );

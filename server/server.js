@@ -41,7 +41,6 @@ let fileToMemfsFunc = (file) => {
 
 let files = imagePaths.map(fileToMemfsFunc);
 
-//TODO; 1. copying all default images to memfs filesystem
 const createInMemFileSys = async (files) => {
   try {
     let promisedFiles = Promise.all(files);
@@ -118,7 +117,6 @@ app.get('/', (req, res) => {
 
 app.post('/images', upload, (req, res) => {
   //kicking off a child process here to build the image
-  //TODO: add the memfscreate logic here
   reImage(req.body)
     .then((img) => {
       res.writeHead(200, { 'Content-Type': 'image/jpeg' });
@@ -135,10 +133,14 @@ app.post('/images', upload, (req, res) => {
  */
 
 app.get('/images', (req, res) => {
-  getImage().then((img) => {
-    res.writeHead(200, { 'Content-Type': 'image/jpeg' });
-    res.end(img);
-  });
+  getImage()
+    .then((img) => {
+      res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+      res.end(img);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.listen(PORT, () => {

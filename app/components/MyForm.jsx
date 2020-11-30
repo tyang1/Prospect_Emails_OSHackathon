@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import Form from 'muicss/lib/react/form';
 import Input from 'muicss/lib/react/input';
 import Textarea from 'muicss/lib/react/textarea';
 import Button from 'muicss/lib/react/button';
 import { useForm, Controller } from 'react-hook-form';
-import { palette } from '@material-ui/system';
 import PaletteSelect from './PaletteSelect.jsx';
 import ImageUpload from './ImageUploader.jsx';
+const axios = require('axios').default;
 
 export default function MyForm(props) {
   const { handleImagePreview } = props;
@@ -20,20 +19,17 @@ export default function MyForm(props) {
   };
 
   const download = (e) => {
-    console.log('inside download');
-    console.log(e.target.href);
-    fetch(e.target.href, {
-      method: 'GET',
-      headers: {},
-    })
+    fetch('http://localhost:8080/images', { method: 'GET' })
       .then((response) => {
-        response.arrayBuffer().then(function (buffer) {
-          const url = window.URL.createObjectURL(new Blob([buffer]));
+        //The arrayBuffer() method of the Body mixin takes a Response stream and reads it to completion. It returns a promise that resolves with an ArrayBuffer.
+        response.blob().then(async function (blob) {
+          const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
           link.setAttribute('download', 'out.jpg'); //or any other extension
           document.body.appendChild(link);
-          link.click();
+          await link.click();
+          document.body.removeChild(link);
         });
       })
       .catch((err) => {
@@ -110,13 +106,7 @@ export default function MyForm(props) {
 
         <Button variant='raised'>See Preview Image!</Button>
       </form>
-      <a
-        download
-        onClick={(e) => download(e)}
-        href={'http://localhost:8080/images'}
-      >
-        Download Image!
-      </a>
+      <Button onClick={(e) => download(e)}>Download Image!</Button>
     </>
   );
 }

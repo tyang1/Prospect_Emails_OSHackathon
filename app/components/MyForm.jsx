@@ -106,7 +106,7 @@ export default function MyForm(props) {
 
         <Button variant='raised'>See Preview Image!</Button>
       </form>
-      <Button onClick={(e) => download(e)}>Download Image!</Button>
+      <Button onClick={(e) => download(e)}>Test Image!</Button>
     </>
   );
 }

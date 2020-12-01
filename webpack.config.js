@@ -8,6 +8,10 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index_bundle.js',
   },
+  devServer: {
+    contentBase: path.resolve(__dirname, 'dist'),
+    hot: true,
+  },
   module: {
     rules: [
       { test: /\.(jsx)$/, use: 'babel-loader' },

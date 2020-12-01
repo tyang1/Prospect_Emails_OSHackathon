@@ -4,7 +4,6 @@ const fs = require('fs');
 
 function getImage() {
   //TODO: add the memfscreate logic here
-  console.log('server getImage');
   return new Promise((resolve, reject) => {
     let imagePath = path.resolve(__dirname, '../imgbuilder/out.jpg');
     fs.readFile(imagePath, (err, data) => {

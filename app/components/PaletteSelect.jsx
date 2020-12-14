@@ -13,6 +13,13 @@ const colors = [
 
 const colorNames = ['Blue', 'Pink'];
 
-export default function PaletteSelect() {
-  return <MultipleSelect options={colors} displayNames={colorNames} />;
+export default function PaletteSelect(props) {
+  const { onChange } = props;
+  return (
+    <MultipleSelect
+      options={colors}
+      displayNames={colorNames}
+      onChange={onChange}
+    />
+  );
 }

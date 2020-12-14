@@ -9,7 +9,7 @@ const axios = require('axios').default;
 
 export default function MyForm(props) {
   const { handleImagePreview } = props;
-  const { control, handleSubmit } = useForm();
+  const { register, control, handleSubmit, setValue } = useForm();
   const [fileName, addFileName] = useState({});
 
   const handleFileUpload = (file) => {
@@ -17,6 +17,14 @@ export default function MyForm(props) {
     fileName[name] = content;
     addFileName(fileName);
   };
+
+  const handleChange = (e) => {
+    setValue('PaletteInput', e.target.value);
+  };
+
+  React.useEffect(() => {
+    register('PaletteInput'); // custom register Antd input
+  }, [register]);
 
   const download = (e) => {
     fetch('http://localhost:8080/images', { method: 'GET' })
@@ -45,6 +53,7 @@ export default function MyForm(props) {
       companyName,
       backgroundColor,
     } = formData;
+    console.log('formdata', formData);
     const data = new FormData();
     data.append('website', fileName['website']);
     data.append('icon', fileName['icon']);
@@ -75,13 +84,14 @@ export default function MyForm(props) {
           floatingLabel={true}
           required={true}
         />
-        <Controller
+        <PaletteSelect onChange={handleChange} />
+        {/* <Controller
           as={PaletteSelect}
           name='backgroundColor'
           control={control}
           floatingLabel={true}
           required={true}
-        />
+        /> */}
         <Controller
           as={Textarea}
           name='notificationText'

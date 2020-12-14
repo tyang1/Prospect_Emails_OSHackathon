@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import MyForm from './components/MyForm.jsx';
 import MainPanel from './components/MainPanel.jsx';
 import { getImages } from './actions/API.js';
-import path from 'path';
 
 export default function App() {
   const [images, setImage] = useState(null);
@@ -38,9 +37,9 @@ renderApp();
 
 //NOTE: module.hot.accept(param1: module to be hot reloaded, param2: what needs to happen)
 
-if (module.hot) {
-  module.hot.accept('./components/MyForm.jsx', function () {
-    console.log('Accepting the updated printMe module!');
-    renderApp();
-  });
-}
+// if (module.hot) {
+//   module.hot.accept('./components/MyForm.jsx', function () {
+//     console.log('Accepting the updated printMe module!');
+//     renderApp();
+//   });
+// }

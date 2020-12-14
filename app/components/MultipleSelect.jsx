@@ -28,26 +28,16 @@ function getStyles(name, optionName, theme) {
 }
 
 export default function MultipleSelect(props) {
-  //   const classes = useStyles();
   const theme = useTheme();
-  const { options, displayNames } = props;
-  const [optionName, setPersonName] = React.useState([]);
+  const { options, displayNames, onChange } = props;
+  const [optionName, setSelectedName] = React.useState([]);
 
   const handleChange = (event) => {
     //TODO: pass back the displayName matching the selected MenuItem
-    setPersonName(event.target.value);
+    console.log('selected', event.target.value);
+    setSelectedName(event.target.value);
+    onChange(event);
   };
-
-  //   const handleChangeMultiple = (event) => {
-  //     const { options } = event.target;
-  //     const value = [];
-  //     for (let i = 0, l = options.length; i < l; i += 1) {
-  //       if (options[i].selected) {
-  //         value.push(options[i].value);
-  //       }
-  //     }
-  //     setPersonName(value);
-  //   };
 
   return (
     <div>

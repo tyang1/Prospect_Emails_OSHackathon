@@ -2,8 +2,6 @@ import React from 'react';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
@@ -33,15 +31,12 @@ export default function MultipleSelect(props) {
   const [optionName, setSelectedName] = React.useState([]);
 
   const handleChange = (event) => {
-    //TODO: pass back the displayName matching the selected MenuItem
-    console.log('selected', event.target.value);
     setSelectedName(event.target.value);
     onChange(event);
   };
 
   return (
     <div>
-      {/* <FormControl className={classes.formControl}> */}
       <InputLabel id='demo-mutiple-name-label'>Background Color</InputLabel>
       <Select
         labelId='demo-mutiple-name-label'
@@ -52,17 +47,16 @@ export default function MultipleSelect(props) {
         input={<Input />}
         MenuProps={MenuProps}
       >
-        {options.map((name, i) => (
+        {options.map((color, i) => (
           <MenuItem
-            key={displayNames[i]}
-            value={displayNames[i]}
-            style={getStyles(displayNames[i], optionName, theme)}
+            key={displayNames[i].name}
+            value={displayNames[i].hex}
+            style={getStyles(displayNames[i].name, optionName, theme)}
           >
-            {name}
+            {color}
           </MenuItem>
         ))}
       </Select>
-      {/* </FormControl> */}
     </div>
   );
 }

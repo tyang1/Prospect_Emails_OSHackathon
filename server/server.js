@@ -8,7 +8,6 @@ const fs = require('fs');
 const { reImage, getImage } = require('./reimage.js');
 const cors = require('cors');
 const { vol } = require('memfs');
-const { create } = require('domain');
 
 /**Multer adds a body object and a file or files object to the request object.
  * The body object contains the values of the text fields of the form, the file or files object

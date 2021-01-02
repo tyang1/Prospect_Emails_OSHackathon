@@ -1,7 +1,7 @@
 # SalesTool
 
 * Start local dev server -> npm run start:development
-* Build client app -> npm run build
+* Build dev client app -> npm run dev
 * Build server image -> docker build -f Dockerfile . -t prospect
 
 # TODO:

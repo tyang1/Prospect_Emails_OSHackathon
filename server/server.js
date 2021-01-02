@@ -8,17 +8,25 @@ const fs = require('fs');
 const { reImage, getImage } = require('./reimage.js');
 const cors = require('cors');
 const { vol } = require('memfs');
+// require('dotenv').config();
 
 /**Multer adds a body object and a file or files object to the request object.
  * The body object contains the values of the text fields of the form, the file or files object
  * contains the files uploaded via the form.
  **/
-let PORT = 8080;
+let port =
+  process.env.NODE_ENV === 'development'
+    ? process.env.DOTENV_CONFIG_PORT || 8080
+    : process.env.DOTENV_PROD_PORT;
+let hostname =
+  process.env.NODE_ENV === 'development'
+    ? process.env.DOTENV_CONFIG_HOST || 'localhost'
+    : process.env.DOTENV_PROD_HOST;
 
 const imagePaths = [
-  '../imgbuilder/browser.jpg',
-  '../imgbuilder/dash.jpg',
-  '../imgbuilder/gen_image.sh',
+  '../imgbuilder/out.jpg',
+  // '../imgbuilder/dash.jpg',
+  // '../imgbuilder/gen_image.sh',
 ];
 
 let fileToMemfsFunc = (file) => {
@@ -27,14 +35,18 @@ let fileToMemfsFunc = (file) => {
     let imagePath = path.resolve(__dirname, file);
     fs.readFile(imagePath, (err, data) => {
       if (err) reject(err);
-      if (imagePath.includes('.jpg')) {
-        json[imagePath.toString()] = Buffer.from(data, 'binary').toString(
-          'base64'
-        );
-      } else if (imagePath.includes('.sh')) {
-        json[imagePath.toString()] = data.toString();
+      try {
+        if (imagePath.includes('.jpg')) {
+          json[imagePath.toString()] = Buffer.from(data, 'base64').toString(
+            'base64'
+          );
+        } else if (imagePath.includes('.sh')) {
+          json[imagePath.toString()] = data.toString();
+        }
+        resolve(json);
+      } catch (err) {
+        throw err;
       }
-      resolve(json);
     });
   });
 };
@@ -42,20 +54,17 @@ let fileToMemfsFunc = (file) => {
 let files = imagePaths.map(fileToMemfsFunc);
 
 const createInMemFileSys = async (files) => {
+  let combinedResult;
   try {
     let promisedFiles = Promise.all(files);
     await promisedFiles.then((results) => {
-      let combinedResult = results.reduce((accumulator, currentValue) => {
-        const [key, value] = Object.entries(accumulator);
-        currentValue[key] = value;
-        return currentValue;
+      combinedResult = results.reduce((accumulator, currentValue) => {
+        const [key, value] = Object.entries(currentValue);
+        accumulator[key] = value;
+
+        return accumulator;
       }, {});
       vol.fromJSON(combinedResult);
-      console.log(
-        vol.readFileSync(
-          '/Users/tiffanyyang/Desktop/OSHackathon/my_app/imgbuilder/gen_image.sh'
-        )
-      );
     });
   } catch (err) {
     throw new Error(err);
@@ -114,7 +123,7 @@ app.get('/', (req, res) => {
  * POST /images route
  *
  */
-
+5;
 app.post('/images', upload, (req, res) => {
   //kicking off a child process here to build the image
   reImage(req.body)
@@ -133,7 +142,7 @@ app.post('/images', upload, (req, res) => {
  */
 
 app.get('/images', (req, res) => {
-  getImage()
+  getImage(createInMemFileSys(files))
     .then((img) => {
       res.writeHead(200, { 'Content-Type': 'image/jpeg' });
       res.end(img);
@@ -143,8 +152,8 @@ app.get('/images', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+app.listen(port, hostname, () => {
+  console.log(`Listening on port ${port}`);
 });
 
 module.exports = app;

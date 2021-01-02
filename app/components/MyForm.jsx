@@ -5,23 +5,42 @@ import Button from 'muicss/lib/react/button';
 import { useForm, Controller } from 'react-hook-form';
 import PaletteSelect from './PaletteSelect.jsx';
 import ImageUpload from './ImageUploader.jsx';
-const axios = require('axios').default;
 
 export default function MyForm(props) {
-  const { handleImagePreview } = props;
-  const { control, handleSubmit } = useForm();
+  const { handleImagePreview, onSubmitForm } = props;
+  const { register, control, handleSubmit, getValues, setValue } = useForm();
+  const [isFormValid, handleFormValidation] = useState(false);
   const [fileName, addFileName] = useState({});
+  const [customFormValid, setCustomFormValid] = useState({});
+
+  const updateFormValid = (name) => {
+    return (event) => {
+      setValue(name, event);
+      const values = getValues();
+      setCustomFormValid(Object.assign({ ...customFormValid }, { ...values }));
+    };
+  };
 
   const handleFileUpload = (file) => {
     const { name, content } = file;
     fileName[name] = content;
     addFileName(fileName);
+    updateFormValid(name)(true);
   };
+
+  const handlePaletteSelect = (e) => {
+    updateFormValid('PaletteInput')(e.target.value);
+  };
+
+  React.useEffect(() => {
+    register('PaletteInput', { required: true, min: 1 });
+    register('website', { required: true, min: 1 });
+    register('icon', { required: true, min: 1 });
+  }, [register]);
 
   const download = (e) => {
     fetch('http://localhost:8080/images', { method: 'GET' })
       .then((response) => {
-        //The arrayBuffer() method of the Body mixin takes a Response stream and reads it to completion. It returns a promise that resolves with an ArrayBuffer.
         response.blob().then(async function (blob) {
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
@@ -37,26 +56,19 @@ export default function MyForm(props) {
       });
   };
 
-  //TODO: making the onSubmitForm more reusable with delegate pattern
-  const onSubmitForm = (formData) => {
-    const {
-      notificationText,
-      siteUrl,
-      companyName,
-      backgroundColor,
-    } = formData;
-    const data = new FormData();
-    data.append('website', fileName['website']);
-    data.append('icon', fileName['icon']);
-    data.append('notificationText', notificationText);
-    data.append('siteUrl', siteUrl);
-    data.append('companyName', companyName);
-    data.append('backgroundColor', backgroundColor);
-    handleImagePreview(data);
-  };
   return (
     <>
-      <form encType='multipart/form-data' onSubmit={handleSubmit(onSubmitForm)}>
+      <form
+        encType='multipart/form-data'
+        onSubmit={handleSubmit(
+          onSubmitForm({
+            handleImagePreview,
+            handleFormValidation,
+            customFormValid,
+            fileName,
+          })
+        )}
+      >
         <legend>Template Fields</legend>
         <Controller
           as={Input}
@@ -76,12 +88,15 @@ export default function MyForm(props) {
           required={true}
         />
         <Controller
-          as={PaletteSelect}
-          name='backgroundColor'
           control={control}
-          floatingLabel={true}
+          name='PaletteInput'
+          defaultValue=''
           required={true}
+          render={() => <PaletteSelect onChange={handlePaletteSelect} />}
         />
+        {!isFormValid && !customFormValid['PaletteInput'] ? (
+          <p style={{ color: 'red' }}>Need to pick a background color</p>
+        ) : null}
         <Controller
           as={Textarea}
           name='notificationText'
@@ -92,21 +107,46 @@ export default function MyForm(props) {
           required={true}
         />
         <label>Website Image Upload</label>
-        <ImageUpload
-          id='contained-button-file1'
-          fileName='website'
-          onFileSelect={handleFileUpload}
+        <Controller
+          required={true}
+          control={control}
+          name='website'
+          render={() => (
+            <ImageUpload
+              name='website'
+              id='contained-button-file1'
+              fileName='website'
+              onFileSelect={handleFileUpload}
+            />
+          )}
         />
+        {!isFormValid && !customFormValid['website'] ? (
+          <p style={{ color: 'red' }}>Need to pick a website image!</p>
+        ) : null}
+
         <label>Push Notification Icon Upload</label>
-        <ImageUpload
-          id='contained-button-file2'
-          fileName='icon'
-          onFileSelect={handleFileUpload}
+        <Controller
+          required={true}
+          control={control}
+          name='icon'
+          render={() => (
+            <ImageUpload
+              name='icon'
+              id='contained-button-file2'
+              fileName='icon'
+              onFileSelect={handleFileUpload}
+            />
+          )}
         />
+        {!isFormValid && !customFormValid['icon'] ? (
+          <p style={{ color: 'red' }}>Need to pick a push icon!</p>
+        ) : null}
 
         <Button variant='raised'>See Preview Image!</Button>
       </form>
-      <Button onClick={(e) => download(e)}>Test Image!</Button>
+      <Button disabled={false} onClick={(e) => download(e)}>
+        Download Image!
+      </Button>
     </>
   );
 }

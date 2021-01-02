@@ -11,8 +11,18 @@ const colors = [
   </Box>,
 ];
 
-const colorNames = ['Blue', 'Pink'];
+const colorSpecs = [
+  { name: 'Blue', hex: '#0063F4' },
+  { name: 'Pink', hex: '#FF50C7' },
+];
 
-export default function PaletteSelect() {
-  return <MultipleSelect options={colors} displayNames={colorNames} />;
+export default function PaletteSelect(props) {
+  const { onChange } = props;
+  return (
+    <MultipleSelect
+      options={colors}
+      displayNames={colorSpecs}
+      onChange={onChange}
+    />
+  );
 }

@@ -2,7 +2,7 @@ const axios = require('axios').default;
 
 export async function getImages(data, setImage) {
   await axios({
-    url: 'http://localhost:8080/images',
+    url: `${process.env.API_URL}/images`,
     method: 'post',
     data,
   })

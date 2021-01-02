@@ -1,97 +1,96 @@
-import React, { useState, useCallback } from 'react'
-import Input from 'muicss/lib/react/input'
-import Textarea from 'muicss/lib/react/textarea'
-import Button from 'muicss/lib/react/button'
-import { useForm, Controller, errors } from 'react-hook-form'
-import PaletteSelect from './PaletteSelect.jsx'
-import ImageUpload from './ImageUploader.jsx'
-import { ErrorMessage } from '@hookform/error-message'
+import React, { useState, useCallback } from 'react';
+import Input from 'muicss/lib/react/input';
+import Textarea from 'muicss/lib/react/textarea';
+import Button from 'muicss/lib/react/button';
+import { useForm, Controller } from 'react-hook-form';
+import PaletteSelect from './PaletteSelect.jsx';
+import ImageUpload from './ImageUploader.jsx';
 
 export default function MyForm(props) {
-  const { handleImagePreview, onSubmitForm } = props
-  const { register, control, handleSubmit, getValues, setValue } = useForm()
-  const [isFormValid, handleFormValidation] = useState(false)
-  const [fileName, addFileName] = useState({})
-  const [customFormValid, setCustomFormValid] = useState({})
+  const { handleImagePreview, onSubmitForm } = props;
+  const { register, control, handleSubmit, getValues, setValue } = useForm();
+  const [isFormValid, handleFormValidation] = useState(false);
+  const [fileName, addFileName] = useState({});
+  const [customFormValid, setCustomFormValid] = useState({});
 
   const updateFormValid = (name) => {
     return (event) => {
-      setValue(name, event)
-      const values = getValues()
-      setCustomFormValid(Object.assign({ ...customFormValid }, { ...values }))
-    }
-  }
+      setValue(name, event);
+      const values = getValues();
+      setCustomFormValid(Object.assign({ ...customFormValid }, { ...values }));
+    };
+  };
 
   const handleFileUpload = (file) => {
-    const { name, content } = file
-    fileName[name] = content
-    addFileName(fileName)
-    updateFormValid(name)(true)
-  }
+    const { name, content } = file;
+    fileName[name] = content;
+    addFileName(fileName);
+    updateFormValid(name)(true);
+  };
 
   const handlePaletteSelect = (e) => {
-    updateFormValid('PaletteInput')(e.target.value)
-  }
+    updateFormValid('PaletteInput')(e.target.value);
+  };
 
   React.useEffect(() => {
-    register('PaletteInput', { required: true, min: 1 })
-    register('website', { required: true, min: 1 })
-    register('icon', { required: true, min: 1 })
-  }, [register])
+    register('PaletteInput', { required: true, min: 1 });
+    register('website', { required: true, min: 1 });
+    register('icon', { required: true, min: 1 });
+  }, [register]);
 
   const download = (e) => {
     fetch('http://localhost:8080/images', { method: 'GET' })
       .then((response) => {
         response.blob().then(async function (blob) {
-          const url = window.URL.createObjectURL(blob)
-          const link = document.createElement('a')
-          link.href = url
-          link.setAttribute('download', 'out.jpg') //or any other extension
-          document.body.appendChild(link)
-          await link.click()
-          document.body.removeChild(link)
-        })
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'out.jpg'); //or any other extension
+          document.body.appendChild(link);
+          await link.click();
+          document.body.removeChild(link);
+        });
       })
       .catch((err) => {
-        console.log(err)
-      })
-  }
+        console.log(err);
+      });
+  };
 
   return (
     <>
       <form
-        encType="multipart/form-data"
+        encType='multipart/form-data'
         onSubmit={handleSubmit(
           onSubmitForm({
             handleImagePreview,
             handleFormValidation,
             customFormValid,
             fileName,
-          }),
+          })
         )}
       >
         <legend>Template Fields</legend>
         <Controller
           as={Input}
-          name="companyName"
+          name='companyName'
           control={control}
-          defaultValue=""
-          label="Company"
+          defaultValue=''
+          label='Company'
           required={true}
         />
         <Controller
           as={Input}
-          name="siteUrl"
+          name='siteUrl'
           control={control}
-          defaultValue=""
-          label="Required Site URL"
+          defaultValue=''
+          label='Required Site URL'
           floatingLabel={true}
           required={true}
         />
         <Controller
           control={control}
-          name="PaletteInput"
-          defaultValue=""
+          name='PaletteInput'
+          defaultValue=''
           required={true}
           render={() => <PaletteSelect onChange={handlePaletteSelect} />}
         />
@@ -100,10 +99,10 @@ export default function MyForm(props) {
         ) : null}
         <Controller
           as={Textarea}
-          name="notificationText"
+          name='notificationText'
           control={control}
-          defaultValue=""
-          label="Notification Text"
+          defaultValue=''
+          label='Notification Text'
           floatingLabel={true}
           required={true}
         />
@@ -111,12 +110,12 @@ export default function MyForm(props) {
         <Controller
           required={true}
           control={control}
-          name="website"
+          name='website'
           render={() => (
             <ImageUpload
-              name="website"
-              id="contained-button-file1"
-              fileName="website"
+              name='website'
+              id='contained-button-file1'
+              fileName='website'
               onFileSelect={handleFileUpload}
             />
           )}
@@ -129,12 +128,12 @@ export default function MyForm(props) {
         <Controller
           required={true}
           control={control}
-          name="icon"
+          name='icon'
           render={() => (
             <ImageUpload
-              name="icon"
-              id="contained-button-file2"
-              fileName="icon"
+              name='icon'
+              id='contained-button-file2'
+              fileName='icon'
               onFileSelect={handleFileUpload}
             />
           )}
@@ -143,11 +142,11 @@ export default function MyForm(props) {
           <p style={{ color: 'red' }}>Need to pick a push icon!</p>
         ) : null}
 
-        <Button variant="raised">See Preview Image!</Button>
+        <Button variant='raised'>See Preview Image!</Button>
       </form>
       <Button disabled={false} onClick={(e) => download(e)}>
         Download Image!
       </Button>
     </>
-  )
+  );
 }

@@ -5,7 +5,7 @@
 * Build server image -> docker build -f Dockerfile . -t prospect
 
 # TODO:
-* Make API URL configurable
+* Make API URL configurable (done)
 * investigate server../imgbuilder artifact
 * in-memory FS
 * Deploy somewhere useful!

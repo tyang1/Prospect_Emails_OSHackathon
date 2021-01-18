@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --env.API_URL= --config webpack.config.build.js",
-    "dev": "webpack --env.API_URL=https://localhost:8080  --config webpack.config.dev.js --watch",
+    "dev": "webpack --env.API_URL=http://localhost:8080  --config webpack.config.dev.js --watch",
     "start:development": "NODE_ENV=development nodemon -r dotenv/config server/server.js",
     "start": "node -r dotenv/config server/server.js"
   },

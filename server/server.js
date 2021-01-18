@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const fs = require('fs');
 const { reImage, getImage } = require('./reimage.js');
+const { createInMemFileSys } = require('./createFileToMem.js');
 const cors = require('cors');
 const { vol } = require('memfs');
 // require('dotenv').config();
@@ -23,56 +24,8 @@ let hostname =
     ? process.env.DOTENV_CONFIG_HOST || 'localhost'
     : process.env.DOTENV_PROD_HOST;
 
-const imagePaths = [
-  '../imgbuilder/out.jpg',
-  // '../imgbuilder/dash.jpg',
-  // '../imgbuilder/gen_image.sh',
-];
-
-let fileToMemfsFunc = (file) => {
-  return new Promise((resolve, reject) => {
-    const json = {};
-    let imagePath = path.resolve(__dirname, file);
-    fs.readFile(imagePath, (err, data) => {
-      if (err) reject(err);
-      try {
-        if (imagePath.includes('.jpg')) {
-          json[imagePath.toString()] = Buffer.from(data, 'base64').toString(
-            'base64'
-          );
-        } else if (imagePath.includes('.sh')) {
-          json[imagePath.toString()] = data.toString();
-        }
-        resolve(json);
-      } catch (err) {
-        throw err;
-      }
-    });
-  });
-};
-
-let files = imagePaths.map(fileToMemfsFunc);
-
-const createInMemFileSys = async (files) => {
-  let combinedResult;
-  try {
-    let promisedFiles = Promise.all(files);
-    await promisedFiles.then((results) => {
-      combinedResult = results.reduce((accumulator, currentValue) => {
-        const [key, value] = Object.entries(currentValue);
-        accumulator[key] = value;
-
-        return accumulator;
-      }, {});
-      vol.fromJSON(combinedResult);
-    });
-  } catch (err) {
-    throw new Error(err);
-  }
-};
-
 //Creating in memory builder default images
-createInMemFileSys(files);
+// createInMemFileSys(files);
 
 //TODO: remove the following after memfs is all set
 var storage = multer.diskStorage({
@@ -140,16 +93,17 @@ app.post('/images', upload, (req, res) => {
  * GET /images route
  *
  */
-
 app.get('/images', (req, res) => {
-  getImage(createInMemFileSys(files))
-    .then((img) => {
-      res.writeHead(200, { 'Content-Type': 'image/jpeg' });
-      res.end(img);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  createInMemFileSys().then((files) => {
+    getImage(files)
+      .then((img) => {
+        res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        res.end(img);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 });
 
 app.listen(port, hostname, () => {

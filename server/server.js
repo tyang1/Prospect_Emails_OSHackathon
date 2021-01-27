@@ -79,14 +79,16 @@ app.get('/', (req, res) => {
 5;
 app.post('/images', upload, (req, res) => {
   //kicking off a child process here to build the image
-  reImage(req.body)
-    .then((img) => {
-      res.writeHead(200, { 'Content-Type': 'image/jpeg' });
-      res.end(img);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  createInMemFileSys().then((files) => {
+    reImage(req.body, files)
+      .then((img) => {
+        res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        res.end(img);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 });
 
 /**

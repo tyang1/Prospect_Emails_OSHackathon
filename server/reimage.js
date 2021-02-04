@@ -1,7 +1,8 @@
-const { spawn } = require('child_process');
+const { spawn, execFile } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const { WMStrm } = require('./wStream.js');
+const { Children } = require('react');
 
 function getImage(vol = null) {
   return new Promise((resolve, reject) => {
@@ -17,10 +18,9 @@ function getImage(vol = null) {
 
 function reImage(userInputs, vol = null) {
   let streamInImgPath = path.resolve(__dirname, '../imgbuilder/dash.jpg');
-  // console.log('try', vol[streamInImgPath])
-  console.log('vol image', fs.readFileSync(streamInImgPath));
+  let pushStreamInImgPath = path.resolve(__dirname, '../imgbuilder/push.jpg');
   const streamIn = vol[streamInImgPath];
-  // const streamIn = fs.createReadStream(streamInImgPath);
+  const pushStreamIn = vol[pushStreamInImgPath];
 
   const {
     notificationText = 'Notifications for Saturday123',
@@ -30,12 +30,34 @@ function reImage(userInputs, vol = null) {
   const HEADER_TEXT = notificationText;
   const PUSH_NOTIF_HOST = companyName;
   const URL_TEXT = siteUrl;
-  const args = ['-', '-resize', '640x', '-'];
+  // const args = [];
+  const magicCommands = [
+    // '-',
+    'fd:3',
+    '-size',
+    '1024x768',
+    // 'canvas:',
+    // 'fd:3',
+    // '-geometry',
+    // '764x764+0+50',
+    // '-composite',
+    '-',
+    // '+append',
+    // 'out.jpg',
+  ];
+  const spawnOptions = {
+    stdio: [
+      'pipe',
+      'pipe',
+      'pipe',
+      'pipe', // arrowBuffer1
+      'pipe', // arrowBuffer2
+      // 'ipc',
+    ],
+  };
 
   return new Promise((resolve, reject) => {
-    const convert = spawn('convert', args, {
-      cwd: process.cwd() + '/imgbuilder',
-    });
+    const convert = spawn('convert', magicCommands, spawnOptions);
     convert.stderr.on('data', (err) => {
       console.log('stderr', err);
     });
@@ -45,14 +67,22 @@ function reImage(userInputs, vol = null) {
     streamIn.on('data', (data) => {
       console.log('data', data);
     });
-    streamIn.pipe(convert.stdin);
+    // streamIn.pipe(convert.stdin);
+
+    //todo: use the following code
+    streamIn.pipe(convert.stdio[3]);
     vol['./test.jpg'] = null;
-    convert.stdout
+    convert.stdio[3]
       .pipe(WMStrm({ key: './test.jpg', destination: vol }))
       .on('finish', () => {
-        console.log('downloadStream', vol['./test.jpg']);
         resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'));
       });
+    // vol['./test.jpg'] = null;
+    // convert.stdout
+    //   .pipe(WMStrm({ key: './test.jpg', destination: vol }))
+    //   .on('finish', () => {
+    //     resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'));
+    //   });
   });
   // return new Promise((resolve, reject) => {
   //   execFile(
@@ -65,7 +95,6 @@ function reImage(userInputs, vol = null) {
   //         reject({ error: err });
   //       }
   //       let imagePath = path.resolve(__dirname, '../imgbuilder/out.jpg');
-  //       // console.log('vol', vol[imagePath]);
   //       fs.readFile(imagePath, (err, data) => {
   //         if (err) reject(err);
   //         resolve(Buffer.from(data, 'binary').toString('base64'));

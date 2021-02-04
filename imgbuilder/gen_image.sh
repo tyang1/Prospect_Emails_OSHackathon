@@ -54,4 +54,4 @@ convert \
     -font helvetica -pointsize 10 -draw "text $PUSH_NOTIF_HOST_TGT '$PUSH_NOTIF_HOST'" \
     -font helvetica -pointsize 15 -draw "text $PUSH_NOTIF_MSG_TGT '$PUSH_NOTIF_MSG'" \
     -fill "rgba(255, 80, 199, 1)" -flatten\
-    out.jpg
+    -

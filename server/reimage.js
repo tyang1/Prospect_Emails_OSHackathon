@@ -52,7 +52,6 @@ function reImage(userInputs, vol = null) {
       'pipe',
       'pipe', // arrowBuffer1
       'pipe', // arrowBuffer2
-      // 'ipc',
     ],
   };
 
@@ -67,22 +66,14 @@ function reImage(userInputs, vol = null) {
     streamIn.on('data', (data) => {
       console.log('data', data);
     });
-    // streamIn.pipe(convert.stdin);
-
-    //todo: use the following code
     streamIn.pipe(convert.stdio[3]);
     vol['./test.jpg'] = null;
-    convert.stdio[3]
+    convert.stdout
       .pipe(WMStrm({ key: './test.jpg', destination: vol }))
       .on('finish', () => {
+        console.log('did it??', vol['./test.jpg']);
         resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'));
       });
-    // vol['./test.jpg'] = null;
-    // convert.stdout
-    //   .pipe(WMStrm({ key: './test.jpg', destination: vol }))
-    //   .on('finish', () => {
-    //     resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'));
-    //   });
   });
   // return new Promise((resolve, reject) => {
   //   execFile(

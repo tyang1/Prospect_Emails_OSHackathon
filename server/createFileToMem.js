@@ -13,10 +13,6 @@ function fileToMemfsFunc(file) {
       if (err) reject(err);
       try {
         if (imagePath.includes('.jpg')) {
-          //todo: to figure out how to create writeable stream with fd to work with imageMagick
-          // let writable = fs.createWriteStream(null, { fd: 3 });
-          // writable.write(data);
-          // writable.end();
           readable.push(data);
           readable.push(null);
           json[imagePath.toString()] = readable;

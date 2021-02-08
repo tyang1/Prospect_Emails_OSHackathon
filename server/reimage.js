@@ -2,7 +2,6 @@ const { spawn, execFile } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const { WMStrm } = require('./wStream.js');
-const { Children } = require('react');
 
 function getImage(vol = null) {
   return new Promise((resolve, reject) => {
@@ -17,10 +16,12 @@ function getImage(vol = null) {
 }
 
 function reImage(userInputs, vol = null) {
-  let streamInImgPath = path.resolve(__dirname, '../imgbuilder/dash.jpg');
+  let streamInImgPath = path.resolve(__dirname, '../imgbuilder/browser.jpg');
   let pushStreamInImgPath = path.resolve(__dirname, '../imgbuilder/push.jpg');
-  const streamIn = vol[streamInImgPath];
+  let dashStreamInImgPath = path.resolve(__dirname, '../imgbuilder/dash.jpg');
+  const browserStreamIn = vol[streamInImgPath];
   const pushStreamIn = vol[pushStreamInImgPath];
+  const dashStreamIn = vol[dashStreamInImgPath];
 
   const {
     notificationText = 'Notifications for Saturday123',
@@ -32,15 +33,23 @@ function reImage(userInputs, vol = null) {
   const URL_TEXT = siteUrl;
   // const args = [];
   const magicCommands = [
-    // '-',
-    'fd:3',
     '-size',
     '1024x768',
-    // 'canvas:',
-    // 'fd:3',
-    // '-geometry',
-    // '764x764+0+50',
-    // '-composite',
+    'canvas:out',
+    'fd:3',
+    '-geometry',
+    '764x764+0+50',
+    '-composite',
+    'fd:4',
+    '-geometry',
+    '+550+150',
+    '-composite',
+    'fd:5',
+    '-geometry',
+    '+200+420',
+    '-fill',
+    'rgba(255, 80, 199, 1)',
+    '-flatten',
     '-',
     // '+append',
     // 'out.jpg',
@@ -52,6 +61,8 @@ function reImage(userInputs, vol = null) {
       'pipe',
       'pipe', // arrowBuffer1
       'pipe', // arrowBuffer2
+      'pipe',
+      'pipe',
     ],
   };
 
@@ -63,10 +74,12 @@ function reImage(userInputs, vol = null) {
     convert.stdout.on('data', (data) => {
       console.log('spawn data', data);
     });
-    streamIn.on('data', (data) => {
+    browserStreamIn.on('data', (data) => {
       console.log('data', data);
     });
-    streamIn.pipe(convert.stdio[3]);
+    browserStreamIn.pipe(convert.stdio[3]);
+    pushStreamIn.pipe(convert.stdio[4]);
+    dashStreamIn.pipe(convert.stdio[5]);
     vol['./test.jpg'] = null;
     convert.stdout
       .pipe(WMStrm({ key: './test.jpg', destination: vol }))
@@ -75,24 +88,6 @@ function reImage(userInputs, vol = null) {
         resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'));
       });
   });
-  // return new Promise((resolve, reject) => {
-  //   execFile(
-  //     `sh gen_image.sh`,
-  //     [`"${HEADER_TEXT}"`, `"${PUSH_NOTIF_HOST}"`, `"${URL_TEXT}"`],
-  //     { cwd: process.cwd() + '/imgbuilder', shell: true },
-  //     // { cwd: vol['fakeImgPath'], shell: true },
-  //     (err, stdout, stderr) => {
-  //       if (err) {
-  //         reject({ error: err });
-  //       }
-  //       let imagePath = path.resolve(__dirname, '../imgbuilder/out.jpg');
-  //       fs.readFile(imagePath, (err, data) => {
-  //         if (err) reject(err);
-  //         resolve(Buffer.from(data, 'binary').toString('base64'));
-  //       });
-  //     }
-  //   );
-  // });
 }
 
 module.exports = {

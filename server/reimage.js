@@ -2,6 +2,7 @@ const { spawn, execFile } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const { WMStrm } = require('./wStream.js');
+const { createCanvas, loadImage } = require('canvas');
 
 function getImage(vol = null) {
   return new Promise((resolve, reject) => {
@@ -18,51 +19,53 @@ function getImage(vol = null) {
 function reImage(userInputs, vol = null) {
   let streamInImgPath = path.resolve(__dirname, '../imgbuilder/browser.jpg');
   let pushStreamInImgPath = path.resolve(__dirname, '../imgbuilder/push.jpg');
-  let dashStreamInImgPath = path.resolve(__dirname, '../imgbuilder/shot.jpg');
+  let dashStreamInImgPath = path.resolve(__dirname, '../imgbuilder/dash.jpg');
   const browserStreamIn = vol[streamInImgPath];
   const pushStreamIn = vol[pushStreamInImgPath];
   const dashStreamIn = vol[dashStreamInImgPath];
+  const width = 1024;
+  const height = 768;
+  const canvas = createCanvas(width, height);
+  const context = canvas.getContext('2d');
+  context.fillStyle = '#FFFFFF';
+  context.fillRect(0, 0, width, height);
+  const canvasStream = canvas.createJPEGStream();
 
   const {
     notificationText = 'Notifications for Saturday123',
     siteUrl = 'OneSignalStyle.com',
     companyName = 'bandolierstyle.com',
+    e,
   } = userInputs;
   const HEADER_TEXT = notificationText;
   const PUSH_NOTIF_HOST = companyName;
   const URL_TEXT = siteUrl;
   // const args = [];
   const magicCommands = [
-    'fd:4',
+    'fd:3',
     '-size',
     '1024x768',
-    // 'canvas:white',
-    'fd:5',
+    'fd:4',
     '-geometry',
     '764x764+0+50',
     '-composite',
-    'fd:3',
+    'fd:5',
     '-geometry',
     '+550+150',
-    // '-composite',
+    '-composite',
     // 'fd:5',
     // '-geometry',
     // '+200+420',
-
-    // '-fill',
-    // 'rgba(255, 80, 199, 1)',
     '-flatten',
-    // 'out.jpg',
     '-',
-    // '+append',
   ];
   const spawnOptions = {
     stdio: [
+      'pipe', //default: stdio
+      'pipe', //default: stdout
+      'pipe', //default: stderr
       'pipe',
       'pipe',
-      'pipe',
-      'pipe', // arrowBuffer1
-      'pipe', // arrowBuffer2
       'pipe',
       'pipe',
       'pipe',
@@ -80,8 +83,8 @@ function reImage(userInputs, vol = null) {
     browserStreamIn.on('data', (data) => {
       console.log('data', data);
     });
-    browserStreamIn.pipe(convert.stdio[3]);
-    dashStreamIn.pipe(convert.stdio[4]);
+    canvasStream.pipe(convert.stdio[3]);
+    browserStreamIn.pipe(convert.stdio[4]);
     pushStreamIn.pipe(convert.stdio[5]);
     vol['./test.jpg'] = null;
     convert.stdout

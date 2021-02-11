@@ -29,7 +29,7 @@ function fileToMemfsFunc(file) {
 
 function filesInPromises() {
   const imagePaths = [
-    '../imgbuilder/shot.jpg',
+    '../imgbuilder/dash.jpg',
     '../imgbuilder/push.jpg',
     '../imgbuilder/browser.jpg',
   ];

@@ -18,7 +18,7 @@ function getImage(vol = null) {
 function reImage(userInputs, vol = null) {
   let streamInImgPath = path.resolve(__dirname, '../imgbuilder/browser.jpg');
   let pushStreamInImgPath = path.resolve(__dirname, '../imgbuilder/push.jpg');
-  let dashStreamInImgPath = path.resolve(__dirname, '../imgbuilder/dash.jpg');
+  let dashStreamInImgPath = path.resolve(__dirname, '../imgbuilder/shot.jpg');
   const browserStreamIn = vol[streamInImgPath];
   const pushStreamIn = vol[pushStreamInImgPath];
   const dashStreamIn = vol[dashStreamInImgPath];
@@ -33,26 +33,28 @@ function reImage(userInputs, vol = null) {
   const URL_TEXT = siteUrl;
   // const args = [];
   const magicCommands = [
+    'fd:4',
     '-size',
     '1024x768',
-    'canvas:out',
-    'fd:3',
+    // 'canvas:white',
+    'fd:5',
     '-geometry',
     '764x764+0+50',
     '-composite',
-    'fd:4',
+    'fd:3',
     '-geometry',
     '+550+150',
-    '-composite',
-    'fd:5',
-    '-geometry',
-    '+200+420',
-    '-fill',
-    'rgba(255, 80, 199, 1)',
+    // '-composite',
+    // 'fd:5',
+    // '-geometry',
+    // '+200+420',
+
+    // '-fill',
+    // 'rgba(255, 80, 199, 1)',
     '-flatten',
+    // 'out.jpg',
     '-',
     // '+append',
-    // 'out.jpg',
   ];
   const spawnOptions = {
     stdio: [
@@ -61,6 +63,7 @@ function reImage(userInputs, vol = null) {
       'pipe',
       'pipe', // arrowBuffer1
       'pipe', // arrowBuffer2
+      'pipe',
       'pipe',
       'pipe',
     ],
@@ -78,8 +81,8 @@ function reImage(userInputs, vol = null) {
       console.log('data', data);
     });
     browserStreamIn.pipe(convert.stdio[3]);
-    pushStreamIn.pipe(convert.stdio[4]);
-    dashStreamIn.pipe(convert.stdio[5]);
+    dashStreamIn.pipe(convert.stdio[4]);
+    pushStreamIn.pipe(convert.stdio[5]);
     vol['./test.jpg'] = null;
     convert.stdout
       .pipe(WMStrm({ key: './test.jpg', destination: vol }))

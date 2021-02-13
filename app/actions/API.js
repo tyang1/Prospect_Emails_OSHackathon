@@ -1,6 +1,7 @@
 const axios = require('axios').default;
 
 export async function getImages(data, setImage) {
+  console.log('getImage', data);
   await axios({
     url: `${process.env.API_URL}/images`,
     method: 'post',

@@ -44,7 +44,7 @@ PUSH_NOTIF_IMAGE_TGT=764x76+560+160
 convert \
     -size 1024x768 canvas:\
     $BROWSER_IMAGE -geometry $BROWSER_TGT -composite \
-    $SCREENSHOT_IMAGE -geometry $SCREENSHOT_TGT -composite \
+    # $SCREENSHOT_IMAGE -geometry $SCREENSHOT_TGT -composite \
     $PUSH_IMAGE -geometry $PUSH_TGT -composite \
     $DASHBOARD_IMAGE -geometry $DASHBOARD_TGT -composite \
     -font helvetica -pointsize 15 -draw "text $URL_TGT '$URL_TEXT'" \
@@ -54,4 +54,4 @@ convert \
     -font helvetica -pointsize 10 -draw "text $PUSH_NOTIF_HOST_TGT '$PUSH_NOTIF_HOST'" \
     -font helvetica -pointsize 15 -draw "text $PUSH_NOTIF_MSG_TGT '$PUSH_NOTIF_MSG'" \
     -fill "rgba(255, 80, 199, 1)" -flatten\
-    out.jpg
+    -

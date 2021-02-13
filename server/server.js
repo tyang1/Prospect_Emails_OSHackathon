@@ -1,14 +1,14 @@
-const express = require('express')
-const multer = require('multer')
-const path = require('path')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const app = express()
-const fs = require('fs')
-const { reImage, getImage } = require('./reimage.js')
-const { createInMemFileSys } = require('./createFileToMem.js')
-const cors = require('cors')
-const { vol } = require('memfs')
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const app = express();
+const fs = require('fs');
+const { reImage, getImage } = require('./reimage.js');
+const { createInMemFileSys } = require('./createFileToMem.js');
+const cors = require('cors');
+const formidableMiddleware = require('express-formidable');
 // require('dotenv').config();
 
 /**Multer adds a body object and a file or files object to the request object.
@@ -18,25 +18,25 @@ const { vol } = require('memfs')
 let port =
   process.env.NODE_ENV === 'development'
     ? process.env.DOTENV_CONFIG_PORT || 8080
-    : process.env.DOTENV_PROD_PORT
+    : process.env.DOTENV_PROD_PORT;
 let hostname =
   process.env.NODE_ENV === 'development'
     ? process.env.DOTENV_CONFIG_HOST || 'localhost'
-    : process.env.DOTENV_PROD_HOST
-
-//Creating in memory builder default images
-// createInMemFileSys(files);
+    : process.env.DOTENV_PROD_HOST;
 
 //TODO: remove the following after memfs is all set
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve(__dirname, '../imgbuilder'))
+    cb(null, path.resolve(__dirname, '../imgbuilder'));
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '.jpg')
+    cb(null, file.fieldname + '.jpg');
   },
-})
-var upload = multer({ storage }).fields([{ name: 'website' }, { name: 'icon' }])
+});
+var upload = multer({ storage }).fields([
+  { name: 'website' },
+  { name: 'icon' },
+]);
 
 // const fileFilter = (req, file, cb) => {
 //   if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
@@ -57,36 +57,40 @@ var upload = multer({ storage }).fields([{ name: 'website' }, { name: 'icon' }])
 //   });
 // };
 
-app.use(bodyParser.json())
-app.use(cookieParser())
-app.use(cors())
-app.use('/', express.static('dist'))
+app.use(bodyParser.json());
+app.use(formidableMiddleware());
+app.use(cookieParser());
+app.use(cors());
+app.use('/', express.static('dist'));
 
 /**
  * root
  */
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../dist', 'index.html'))
-})
+  res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
+});
 
 /**
  * POST /images route
  *
  */
-5
-app.post('/images', upload, (req, res) => {
+//updates: remove the upload since everythin happens in-memory
+app.post('/images', (req, res) => {
+  console.log('files', req.files);
+  let imagePayload = { ...req.fields, ...req.files };
+  console.log('req.fields', imagePayload);
   //kicking off a child process here to build the image
   createInMemFileSys().then((fileSys) => {
-    reImage(req.body, fileSys)
+    reImage(imagePayload, fileSys)
       .then((img) => {
-        res.writeHead(200, { 'Content-Type': 'image/jpeg' })
-        res.end(img)
+        res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        res.end(img);
       })
       .catch((err) => {
-        console.log(err)
-      })
-  })
-})
+        console.log(err);
+      });
+  });
+});
 
 /**
  * GET /images route
@@ -96,17 +100,17 @@ app.get('/images', (req, res) => {
   createInMemFileSys().then((files) => {
     getImage(files)
       .then((img) => {
-        res.writeHead(200, { 'Content-Type': 'image/jpeg' })
-        res.end(img)
+        res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        res.end(img);
       })
       .catch((err) => {
-        console.log(err)
-      })
-  })
-})
+        console.log(err);
+      });
+  });
+});
 
 app.listen(port, hostname, () => {
-  console.log(`Listening on port ${port}`)
-})
+  console.log(`Listening on port ${port}`);
+});
 
-module.exports = app
+module.exports = app;

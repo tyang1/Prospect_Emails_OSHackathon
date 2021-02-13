@@ -94,7 +94,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"getImages\", function() { return getImages; });\nconst axios = __webpack_require__(/*! axios */ \"./node_modules/axios/index.js\").default;\n\nasync function getImages(data, setImage) {\n  await axios({\n    url: `${\"http://localhost:8080\"}/images`,\n    method: 'post',\n    data,\n  })\n    .then((response) => {\n      let imageURL = `data:image/jpg;base64,${response.data}`;\n      setImage(imageURL);\n      return;\n    })\n    .catch((error) => {\n      console.log(error);\n    });\n}\n\n\n//# sourceURL=webpack:///./app/actions/API.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"getImages\", function() { return getImages; });\nconst axios = __webpack_require__(/*! axios */ \"./node_modules/axios/index.js\").default;\n\nasync function getImages(data, setImage) {\n  console.log('getImage', data);\n  await axios({\n    url: `${\"http://localhost:8080\"}/images`,\n    method: 'post',\n    data,\n  })\n    .then((response) => {\n      let imageURL = `data:image/jpg;base64,${response.data}`;\n      setImage(imageURL);\n      return;\n    })\n    .catch((error) => {\n      console.log(error);\n    });\n}\n\n\n//# sourceURL=webpack:///./app/actions/API.js?");
 
 /***/ }),
 

@@ -17,12 +17,16 @@ function getImage(vol = null) {
 }
 
 function reImage(userInputs, vol = null) {
+  const { website, icon } = userInputs;
   let streamInImgPath = path.resolve(__dirname, '../imgbuilder/browser.jpg');
   let pushStreamInImgPath = path.resolve(__dirname, '../imgbuilder/push.jpg');
   let dashStreamInImgPath = path.resolve(__dirname, '../imgbuilder/dash.jpg');
   const browserStreamIn = vol[streamInImgPath];
   const pushStreamIn = vol[pushStreamInImgPath];
   const dashStreamIn = vol[dashStreamInImgPath];
+  const websiteStreamIn = fs.createReadStream(Buffer.from(website.path));
+
+  //Creating canvas for image composition:
   const width = 1024;
   const height = 768;
   const canvas = createCanvas(width, height);
@@ -46,16 +50,25 @@ function reImage(userInputs, vol = null) {
     '-size',
     '1024x768',
     'fd:4',
+    '-size',
+    '764x764',
     '-geometry',
-    '764x764+0+50',
+    '+0+50',
+    '-composite',
+    'fd:7',
+    '-resize',
+    '764x764',
+    '-geometry',
+    '+0+60',
     '-composite',
     'fd:5',
     '-geometry',
-    '+550+150',
+    '+350+100',
     '-composite',
-    // 'fd:5',
-    // '-geometry',
-    // '+200+420',
+    'fd:6',
+    '-geometry',
+    '+200+220',
+    '-composite',
     '-flatten',
     '-',
   ];
@@ -64,6 +77,7 @@ function reImage(userInputs, vol = null) {
       'pipe', //default: stdio
       'pipe', //default: stdout
       'pipe', //default: stderr
+      'pipe',
       'pipe',
       'pipe',
       'pipe',
@@ -86,6 +100,8 @@ function reImage(userInputs, vol = null) {
     canvasStream.pipe(convert.stdio[3]);
     browserStreamIn.pipe(convert.stdio[4]);
     pushStreamIn.pipe(convert.stdio[5]);
+    dashStreamIn.pipe(convert.stdio[6]);
+    websiteStreamIn.pipe(convert.stdio[7]);
     vol['./test.jpg'] = null;
     convert.stdout
       .pipe(WMStrm({ key: './test.jpg', destination: vol }))

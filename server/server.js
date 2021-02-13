@@ -8,6 +8,7 @@ const fs = require('fs');
 const { reImage, getImage } = require('./reimage.js');
 const { createInMemFileSys } = require('./createFileToMem.js');
 const cors = require('cors');
+const formidableMiddleware = require('express-formidable');
 // require('dotenv').config();
 
 /**Multer adds a body object and a file or files object to the request object.
@@ -22,9 +23,6 @@ let hostname =
   process.env.NODE_ENV === 'development'
     ? process.env.DOTENV_CONFIG_HOST || 'localhost'
     : process.env.DOTENV_PROD_HOST;
-
-//Creating in memory builder default images
-// createInMemFileSys(files);
 
 //TODO: remove the following after memfs is all set
 var storage = multer.diskStorage({
@@ -60,6 +58,7 @@ var upload = multer({ storage }).fields([
 // };
 
 app.use(bodyParser.json());
+app.use(formidableMiddleware());
 app.use(cookieParser());
 app.use(cors());
 app.use('/', express.static('dist'));
@@ -77,9 +76,12 @@ app.get('/', (req, res) => {
  */
 //updates: remove the upload since everythin happens in-memory
 app.post('/images', (req, res) => {
+  console.log('files', req.files);
+  let imagePayload = { ...req.fields, ...req.files };
+  console.log('req.fields', imagePayload);
   //kicking off a child process here to build the image
   createInMemFileSys().then((fileSys) => {
-    reImage(req.body, fileSys)
+    reImage(imagePayload, fileSys)
       .then((img) => {
         res.writeHead(200, { 'Content-Type': 'image/jpeg' });
         res.end(img);

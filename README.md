@@ -6,7 +6,7 @@
 
 # TODO:
 * Make API URL configurable (done)
-* investigate server../imgbuilder artifact
-* in-memory FS
+* investigate server../imgbuilder artifact (done)
+* in-memory FS (done)
 * Deploy somewhere useful!
-* switch to imagemagick-safe node package and get rid of gen_images.sh and the shell-out to it.
+* switch to imagemagick-safe node package and get rid of gen_images.sh and the shell-out to it. (done)

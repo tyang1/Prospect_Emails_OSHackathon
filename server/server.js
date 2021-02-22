@@ -1,11 +1,9 @@
 const express = require('express');
-const multer = require('multer');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const app = express();
-const fs = require('fs');
-const { reImage, getImage } = require('./reimage.js');
+const { getImage } = require('./getImage.js');
 const { createInMemFileSys } = require('./createFileToMem.js');
 const cors = require('cors');
 const formidableMiddleware = require('express-formidable');
@@ -23,39 +21,6 @@ let hostname =
   process.env.NODE_ENV === 'development'
     ? process.env.DOTENV_CONFIG_HOST || 'localhost'
     : process.env.DOTENV_PROD_HOST;
-
-//TODO: remove the following after memfs is all set
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.resolve(__dirname, '../imgbuilder'));
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '.jpg');
-  },
-});
-var upload = multer({ storage }).fields([
-  { name: 'website' },
-  { name: 'icon' },
-]);
-
-// const fileFilter = (req, file, cb) => {
-//   if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
-//     cb(null, true);
-//   } else {
-//     cb(null, false);
-//   }
-// };
-
-// const uploadMW = (req, res, next) => {
-//   upload(req, res, function (err) {
-//     if (err instanceof multer.MulterError) {
-//       return res.status(500).json(err);
-//     } else if (err) {
-//       return res.status(500).json(err);
-//     }
-//     next();
-//   });
-// };
 
 app.use(bodyParser.json());
 app.use(formidableMiddleware());
@@ -76,12 +41,10 @@ app.get('/', (req, res) => {
  */
 //updates: remove the upload since everythin happens in-memory
 app.post('/images', (req, res) => {
-  console.log('files', req.files);
   let imagePayload = { ...req.fields, ...req.files };
-  console.log('req.fields', imagePayload);
   //kicking off a child process here to build the image
   createInMemFileSys().then((fileSys) => {
-    reImage(imagePayload, fileSys)
+    getImage(imagePayload, fileSys)
       .then((img) => {
         res.writeHead(200, { 'Content-Type': 'image/jpeg' });
         res.end(img);
@@ -97,8 +60,9 @@ app.post('/images', (req, res) => {
  *
  */
 app.get('/images', (req, res) => {
+  //TODO: using the saved form state
   createInMemFileSys().then((files) => {
-    getImage(files)
+    getImage(imagePayload, files, true)
       .then((img) => {
         res.writeHead(200, { 'Content-Type': 'image/jpeg' });
         res.end(img);

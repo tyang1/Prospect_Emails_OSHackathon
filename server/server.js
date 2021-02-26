@@ -19,7 +19,7 @@ let port =
     : process.env.DOTENV_PROD_PORT;
 let hostname =
   process.env.NODE_ENV === 'development'
-    ? process.env.DOTENV_CONFIG_HOST || 'localhost'
+    ? process.env.DOTENV_CONFIG_HOST || '0.0.0.0'
     : process.env.DOTENV_PROD_HOST;
 
 app.use(bodyParser.json());
@@ -74,7 +74,7 @@ app.get('/images', (req, res) => {
 });
 
 app.listen(port, hostname, () => {
-  console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}, with hostname ${hostname}`);
 });
 
 module.exports = app;

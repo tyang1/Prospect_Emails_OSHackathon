@@ -1,8 +1,8 @@
 FROM node:15-alpine
 ENV DOTENV_CONFIG_PORT=8080 \
-DOTENV_CONFIG_HOST=localhost \
+DOTENV_CONFIG_HOST=0.0.0.0 \
 DOTENV_PROD_PORT=8080 \
-DOTENV_PROD_HOST=localhost
+DOTENV_PROD_HOST=0.0.0.0
 
 
 # WORKDIR /usr/src/app
@@ -32,5 +32,5 @@ WORKDIR /src
     RUN npm install
         
 
-EXPOSE 8000
+EXPOSE 8080
 CMD [ "node", "server/server.js"]

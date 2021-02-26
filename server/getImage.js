@@ -4,29 +4,17 @@ const fs = require('fs');
 const { WMStrm } = require('./wStream.js');
 const { createCanvas, loadImage } = require('canvas');
 
-function getImage(vol = null) {
-  return new Promise((resolve, reject) => {
-    let outputPath = path.resolve(__dirname, '../imgbuilder/out.jpg');
-    console.log('outputPath', outputPath);
-    let data = vol[outputPath];
-    // fs.readFile(imagePath, (err, data) => {
-    //   if (err) reject(err);
-    resolve(Buffer.from(data, 'base64'));
-    // });
-  });
-}
-
-function reImage(userInputs, vol = null) {
+//TODO, make the static image generation more dynamic
+function createImage({ userInputs, vol, paths }) {
   const { website, icon, siteUrl, companyName, notificationText } = userInputs;
-  let streamInImgPath = path.resolve(__dirname, '../imgbuilder/browser.jpg');
-  let pushStreamInImgPath = path.resolve(__dirname, '../imgbuilder/push.jpg');
-  let dashStreamInImgPath = path.resolve(__dirname, '../imgbuilder/dash.jpg');
+  let streamInImgPath = path.resolve(__dirname, paths['browser']);
+  let pushStreamInImgPath = path.resolve(__dirname, paths['push']);
+  let dashStreamInImgPath = path.resolve(__dirname, paths['dash']);
   const browserStreamIn = vol[streamInImgPath];
   const pushStreamIn = vol[pushStreamInImgPath];
   const dashStreamIn = vol[dashStreamInImgPath];
   const websiteStreamIn = fs.createReadStream(Buffer.from(website.path));
   const iconStreamIn = fs.createReadStream(Buffer.from(icon.path));
-
   //Creating canvas for image composition:
   const width = 1024;
   const height = 768;
@@ -145,12 +133,26 @@ function reImage(userInputs, vol = null) {
       .pipe(WMStrm({ key: './test.jpg', destination: vol }))
       .on('finish', () => {
         console.log('did it??', vol['./test.jpg']);
-        resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'));
+        resolve(vol);
       });
+  });
+}
+
+async function getImage(userInputs, vol = null, download = false) {
+  const paths = {
+    browser: '../imgbuilder/browser.jpg',
+    push: '../imgbuilder/push.jpg',
+    dash: '../imgbuilder/dash.jpg',
+  };
+  return new Promise((resolve, reject) => {
+    createImage({ userInputs, vol, paths }).then((vol) =>
+      download
+        ? resolve(Buffer.from(data, 'base64'))
+        : resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'))
+    );
   });
 }
 
 module.exports = {
   getImage,
-  reImage,
 };

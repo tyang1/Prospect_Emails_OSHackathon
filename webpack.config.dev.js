@@ -29,7 +29,7 @@ module.exports = (env) => {
         template: 'app/index.html',
       }),
       new webpack.DefinePlugin({
-        'process.env.API_URL': JSON.stringify(`${env.API_URL}`),
+        'process.env.DEV_API_URL': JSON.stringify(`${env.DEV_API_URL}`),
       }),
       // new webpack.HotModuleReplacementPlugin(),
     ],

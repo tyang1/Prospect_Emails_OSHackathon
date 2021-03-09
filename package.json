@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --env.API_URL= --config webpack.config.build.js",
     "dev": "webpack --env.DEV_API_URL=http://0.0.0.0:8080  --config webpack.config.dev.js --watch",
-    "start:development": "NODE_ENV=development nodemon -r dotenv/config server/server.js",
-    "start": "node -r dotenv/config server/server.js"
+    "start:development": "NODE_ENV=development nodemon -r dotenv/config server/index.js",
+    "start": "node -r dotenv/config server/index.js"
   },
   "author": "",
   "license": "ISC",

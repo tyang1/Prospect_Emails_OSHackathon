@@ -28,25 +28,6 @@ function createImage({ userInputs, vol, paths }) {
   const PUSH_NOTIF_HOST = companyName;
   const URL_TEXT = siteUrl;
 
-  const testCommands = [
-    'fd:3',
-    '-size',
-    '200x50',
-    '-box',
-    'white',
-    '-pointsize',
-    '20',
-    '-gravity',
-    'center',
-    '-annotate',
-    '0',
-    '@ %% ',
-    '-trim',
-    '+repage',
-    '-flatten',
-    '-',
-  ];
-
   const magicCommands = [
     'fd:3', //BROWSER_IMGAGE
     '-size',

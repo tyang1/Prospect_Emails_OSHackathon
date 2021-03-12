@@ -12,6 +12,7 @@ export default function FormContent(props) {
   const [isFormValid, handleFormValidation] = useState(false);
   const [fileName, addFileName] = useState({});
   const [customFormValid, setCustomFormValid] = useState({});
+  let [submitMode, setSubmitMode] = useState(null);
 
   const updateFormValid = (name) => {
     return (event) => {
@@ -38,24 +39,6 @@ export default function FormContent(props) {
     register('icon', { required: true, min: 1 });
   }, [register]);
 
-  const download = (e) => {
-    fetch(`${process.env.API_URL}/images`, { method: 'GET' })
-      .then((response) => {
-        response.blob().then(async function (blob) {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'out.jpg'); //or any other extension
-          document.body.appendChild(link);
-          await link.click();
-          document.body.removeChild(link);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   return (
     <>
       <form
@@ -66,6 +49,7 @@ export default function FormContent(props) {
             handleFormValidation,
             customFormValid,
             fileName,
+            submitMode,
           })
         )}
       >
@@ -142,11 +126,13 @@ export default function FormContent(props) {
           <p style={{ color: 'red' }}>Need to pick a push icon!</p>
         ) : null}
 
-        <Button variant='raised'>See Preview Image!</Button>
+        <Button onClick={(e) => setSubmitMode('preview')} variant='raised'>
+          See Preview Image!
+        </Button>
+        <Button onClick={(e) => setSubmitMode('download')} variant='raised'>
+          Download Image!
+        </Button>
       </form>
-      <Button disabled={false} onClick={(e) => download(e)}>
-        Download Image!
-      </Button>
     </>
   );
 }

@@ -119,24 +119,26 @@ function createImage({ userInputs, vol, paths }) {
     convert.stdout
       .pipe(WMStrm({ key: './test.jpg', destination: vol }))
       .on('finish', () => {
-        console.log('did it??', vol['./test.jpg']);
         resolve(vol);
       });
   });
 }
 
-async function getImage(userInputs, vol = null, download = false) {
+async function getImage(userInputs, vol = null) {
   const paths = {
     browser: '../imgbuilder/browser.jpg',
     push: '../imgbuilder/push.jpg',
     dash: '../imgbuilder/dash.jpg',
   };
   return new Promise((resolve, reject) => {
-    createImage({ userInputs, vol, paths }).then((vol) =>
-      download
-        ? resolve(Buffer.from(data, 'base64'))
-        : resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'))
-    );
+    createImage({ userInputs, vol, paths })
+      .then((vol) =>
+        resolve(Buffer.from(vol['./test.jpg'], 'binary').toString('base64'))
+      )
+      .catch((err) => {
+        console.error(err);
+        reject(new Error(err));
+      });
   });
 }
 

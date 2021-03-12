@@ -18,7 +18,7 @@ export async function getImages(data, setImage) {
 
 export async function downloadImage(data) {
   await axios({
-    url: `${process.env.DEV_API_URL}/images/download`,
+    url: `${process.env.DEV_API_URL}/images/preview`,
     method: 'post',
     data,
   })

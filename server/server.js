@@ -55,24 +55,6 @@ const start = (options) => {
       });
     });
 
-    /**
-     * POST /images/download route
-     *
-     */
-    app.post('/images/download', (req, res) => {
-      let imagePayload = { ...req.fields, ...req.files };
-      createInMemFileSys().then((files) => {
-        getImage(imagePayload, files)
-          .then((img) => {
-            res.writeHead(200, { 'Content-Type': 'image/jpeg' });
-            res.end(img);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
-    });
-
     const server = app.listen(port, hostname, () => {
       console.log(`Listening on port ${port}, with hostname ${hostname}`);
       resolve(server);

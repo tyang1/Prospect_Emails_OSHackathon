@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import MyForm from './components/MyForm.jsx';
 import FormContent from './components/FormContent.jsx';
 import MainPanel from './components/MainPanel.jsx';
-import { getImages } from './actions/API.js';
+import { getImages, downloadImage } from './actions/API.js';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 export default function App() {
   const [images, setImage] = useState(null);
-  const handleImageOutput = async (data) => {
+  const handleImageOutput = async (data, submitMode) => {
     // data payload could include:
     //  2 COLOR=green
     //  3 HEADER_TEXT="Notifications for Bandolier"
@@ -19,7 +19,11 @@ export default function App() {
     //  8 DASHBOARD_IMAGE=dash.jpg
     //  9 SCREENSHOT_IMAGE=shot.jpg
     // 10 PUSH_NOTIF_IMAGE=logo.jpg
-    await getImages(data, setImage);
+    if (submitMode == 'preview') {
+      await getImages(data, setImage);
+    } else {
+      await downloadImage(data);
+    }
     return true;
   };
 
@@ -28,6 +32,7 @@ export default function App() {
     handleFormValidation,
     customFormValid,
     fileName,
+    submitMode,
   }) => (formData) => {
     const {
       notificationText,
@@ -43,7 +48,7 @@ export default function App() {
       !customFormValid['icon'] ||
       !customFormValid['PaletteInput']
     ) {
-      return;
+      return false;
     }
     data.append('website', fileName['website']);
     data.append('icon', fileName['icon']);
@@ -51,7 +56,7 @@ export default function App() {
     data.append('siteUrl', siteUrl);
     data.append('companyName', companyName);
     data.append('backgroundColor', PaletteInput);
-    handleImagePreview(data).then((imagePreviewed) => {
+    handleImagePreview(data, submitMode).then((imagePreviewed) => {
       if (imagePreviewed) {
         handleFormValidation(true);
       }

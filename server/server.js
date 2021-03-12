@@ -37,11 +37,10 @@ const start = (options) => {
       res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
     });
     /**
-     * POST /images route
+     * POST /images/preview route
      *
      */
-    //updates: remove the upload since everythin happens in-memory
-    app.post('/images', (req, res) => {
+    app.post('/images/preview', (req, res) => {
       let imagePayload = { ...req.fields, ...req.files };
       //kicking off a child process here to build the image
       createInMemFileSys().then((fileSys) => {
@@ -57,13 +56,13 @@ const start = (options) => {
     });
 
     /**
-     * GET /images route
+     * POST /images/download route
      *
      */
-    app.get('/images', (req, res) => {
-      //TODO: using the saved form state
+    app.post('/images/download', (req, res) => {
+      let imagePayload = { ...req.fields, ...req.files };
       createInMemFileSys().then((files) => {
-        getImage(imagePayload, files, true)
+        getImage(imagePayload, files)
           .then((img) => {
             res.writeHead(200, { 'Content-Type': 'image/jpeg' });
             res.end(img);

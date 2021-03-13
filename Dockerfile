@@ -41,4 +41,4 @@ WORKDIR /src
         
 
 EXPOSE 8080
-CMD [ "node", "server/server.js"]
+CMD [ "node", "server/index.js"]

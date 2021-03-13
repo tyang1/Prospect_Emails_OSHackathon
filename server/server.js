@@ -37,10 +37,10 @@ const start = (options) => {
       res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
     });
     /**
-     * POST /images/preview route
+     * POST /images route
      *
      */
-    app.post('/images/preview', (req, res) => {
+    app.post('/images', (req, res) => {
       let imagePayload = { ...req.fields, ...req.files };
       //kicking off a child process here to build the image
       createInMemFileSys().then((fileSys) => {

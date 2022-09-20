@@ -2,7 +2,7 @@ const axios = require('axios').default;
 
 export async function getImages(data, setImage) {
   await axios({
-    url: `${process.env.DEV_API_URL}/images/preview`,
+    url: `${process.env.API_HOSTNAME}/${process.env.API_PORT}/images/preview`,
     method: 'post',
     data,
   })
@@ -18,7 +18,7 @@ export async function getImages(data, setImage) {
 
 export async function downloadImage(data) {
   await axios({
-    url: `${process.env.DEV_API_URL}/images/download`,
+    url: `${process.env.API_HOSTNAME}/${process.env.API_PORT}/images/download`,
     method: 'post',
     data,
   })

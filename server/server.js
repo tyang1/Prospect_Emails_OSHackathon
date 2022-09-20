@@ -8,7 +8,7 @@ const formidableMiddleware = require('express-formidable');
 
 const start = (options) => {
   return new Promise((resolve, reject) => {
-    const { port, hostname, createInMemFileSys, getImage } = options;
+    const { port, hostname, repos } = options;
     if (!port) {
       reject(new Error('no port config'));
     }
@@ -16,26 +16,17 @@ const start = (options) => {
       reject(new Error('no hostname config'));
     }
 
-    if (!createInMemFileSys) {
-      reject(new Error('no createInMemFileSys config'));
+    if (repos.type !== 'imageInterface') {
+      reject(new Error('no valid repos provided'));
     }
 
-    if (!getImage) {
-      reject(new Error('no getImage config'));
-    }
     app.use(bodyParser.json());
     app.use(formidableMiddleware());
     app.use(cookieParser());
     app.use(cors());
 
-    app.use('/', express.static('dist'));
+    const { createImage, getImage } = repos;
 
-    /**
-     * root
-     */
-    app.get('/', (req, res) => {
-      res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
-    });
     /**
      * POST /images/preview route
      *
@@ -43,7 +34,7 @@ const start = (options) => {
     app.post('/images/preview', (req, res) => {
       let imagePayload = { ...req.fields, ...req.files };
       //kicking off a child process here to build the image
-      createInMemFileSys().then((fileSys) => {
+      createImage().then((fileSys) => {
         getImage(imagePayload, fileSys)
           .then((img) => {
             res.writeHead(200, { 'Content-Type': 'image/jpeg' });
@@ -61,7 +52,7 @@ const start = (options) => {
      */
     app.post('/images/download', (req, res) => {
       let imagePayload = { ...req.fields, ...req.files };
-      createInMemFileSys().then((files) => {
+      createImage().then((files) => {
         getImage(imagePayload, files)
           .then((img) => {
             res.writeHead(200, { 'Content-Type': 'image/jpeg' });

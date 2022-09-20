@@ -10,19 +10,6 @@ function createImage({ userInputs, vol, paths }) {
   let streamInImgPath = path.resolve(__dirname, paths['browser']);
   let pushStreamInImgPath = path.resolve(__dirname, paths['push']);
   let dashStreamInImgPath = path.resolve(__dirname, paths['dash']);
-  const browserStreamIn = vol[streamInImgPath];
-  const pushStreamIn = vol[pushStreamInImgPath];
-  const dashStreamIn = vol[dashStreamInImgPath];
-  const websiteStreamIn = fs.createReadStream(Buffer.from(website.path));
-  const iconStreamIn = fs.createReadStream(Buffer.from(icon.path));
-  //Creating canvas for image composition:
-  const width = 1024;
-  const height = 768;
-  const canvas = createCanvas(width, height);
-  const context = canvas.getContext('2d');
-  context.fillStyle = '#FFFFFF';
-  context.fillRect(0, 0, width, height);
-  const canvasStream = canvas.createJPEGStream();
 
   const HEADER_TEXT = notificationText;
   const PUSH_NOTIF_HOST = companyName;
@@ -98,22 +85,44 @@ function createImage({ userInputs, vol, paths }) {
   };
 
   return new Promise((resolve, reject) => {
-    const convert = spawn('convert', magicCommands, spawnOptions);
-    convert.stderr.on('data', (err) => {
-      console.log('stderr', err);
-    });
-    convert.stdout.on('data', (data) => {
-      console.log('spawn data', data);
-    });
-    browserStreamIn.on('data', (data) => {
-      console.log('data', data);
-    });
-    canvasStream.pipe(convert.stdio[3]);
-    browserStreamIn.pipe(convert.stdio[4]);
-    pushStreamIn.pipe(convert.stdio[5]);
-    dashStreamIn.pipe(convert.stdio[6]);
-    websiteStreamIn.pipe(convert.stdio[7]);
-    iconStreamIn.pipe(convert.stdio[8]);
+    try {
+      const browserStreamIn = vol[streamInImgPath];
+      const pushStreamIn = vol[pushStreamInImgPath];
+      const dashStreamIn = vol[dashStreamInImgPath];
+      const websiteStreamIn = fs.createReadStream(Buffer.from(website.path));
+      const iconStreamIn = fs.createReadStream(Buffer.from(icon.path));
+
+      //Creating canvas for image composition:
+      const width = 1024;
+      const height = 768;
+      const canvas = createCanvas(width, height);
+      const context = canvas.getContext('2d');
+      context.fillStyle = '#FFFFFF';
+      context.fillRect(0, 0, width, height);
+      const canvasStream = canvas.createJPEGStream();
+
+      const convert = spawn('convert', magicCommands, spawnOptions);
+      convert.stderr.on('data', (err) => {
+        console.log('stderr', err);
+      });
+      convert.stdout.on('data', (data) => {
+        console.log('spawn data', data);
+      });
+      browserStreamIn.on('data', (data) => {
+        console.log('data', data);
+      });
+
+      canvasStream.pipe(convert.stdio[3]);
+      browserStreamIn.pipe(convert.stdio[4]);
+      pushStreamIn.pipe(convert.stdio[5]);
+      dashStreamIn.pipe(convert.stdio[6]);
+      websiteStreamIn.pipe(convert.stdio[7]);
+      iconStreamIn.pipe(convert.stdio[8]);
+    } catch (error) {
+      console.log(
+        `Error when processing image streams. Error Message : ${error}`
+      );
+    }
 
     vol['./test.jpg'] = null;
     convert.stdout

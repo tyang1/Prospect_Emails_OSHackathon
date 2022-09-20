@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # api:
+  #   container_name: image_api
+  #   restart: unless-stopped
+  #   ports: image_api_prod:1.0.0
+  #   build:
+  #     context: server
+  #     target: production
+  #     dockerfile: Dockerfile
+  #   ports:
+  #    - 8081:8081
+  #   networks:
+  #   - shared-network
+
+  client:
+    container_name: image_client
+    restart: unless-stopped
+    ports: image_client_prod:1.0.0
+    build:
+      context: app
+      target: production
+      dockerfile: Dockerfile
+    ports:
+     - 3000:3000
+    networks:
+     - shared-network
+    # depends_on:
+    #  - api
+
+networks:
+  shared-network:
+
+

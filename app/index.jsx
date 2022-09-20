@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import MyForm from './components/MyForm.jsx';
 import FormContent from './components/FormContent.jsx';
 import MainPanel from './components/MainPanel.jsx';
-import { getImages, downloadImage } from './actions/API.js';
+import { getImages, downloadImage } from './actions/API';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 export default function App() {

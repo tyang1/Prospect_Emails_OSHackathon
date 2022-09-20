@@ -4,9 +4,9 @@ const webpack = require('webpack');
 
 module.exports = (env) => {
   return {
-    entry: './app/index.jsx',
+    entry: './index.jsx',
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, './dist'),
       filename: 'index_bundle.js',
     },
     //Note: the following is only needed for hot module reload
@@ -26,10 +26,7 @@ module.exports = (env) => {
     mode: 'development',
     plugins: [
       new HtmlWebpackPlugin({
-        template: 'app/index.html',
-      }),
-      new webpack.DefinePlugin({
-        'process.env.DEV_API_URL': JSON.stringify(`${env.DEV_API_URL}`),
+        template: './index.html',
       }),
       // new webpack.HotModuleReplacementPlugin(),
     ],
